@@ -1,5 +1,6 @@
 from dearpygui.core import *
 from dearpygui.simple import *
+from datetime import datetime
 
 
 ###################################################################
@@ -34,6 +35,15 @@ except:
 
 ###################################################################
 
+#######################################
+# Save function
+
+def save():
+	pass
+
+
+#######################################
+
 
 a=t1
 b=t2*2
@@ -53,12 +63,32 @@ class ConstructGui:
 	def builder(self):
 		set_main_window_title('Ticket Counter')
 		set_main_window_size(self.width,self.height)
-		set_theme('Dark 2')
+		set_theme('Classic')
 		LoginScreen()
 
 	@staticmethod
 	def run_app():
 		start_dearpygui(primary_window='Jake counter')
+
+
+class Tab:
+	def __init__(self, tab_name, parent):
+		self.tab_name = tab_name
+		self.parent = parent
+
+	def generate(self, yes):
+
+		add_tab(name=self.tab_name, parent=self.parent, show=yes)
+
+class Column:
+	def __init__(self, table,name,column):
+		self.table = table
+		self.name = name
+		self.column = column
+
+	def generate(self):
+		add_column(table=self.table,name=self.name,column=self.column)
+
 
 class LoginScreen:
 
@@ -81,16 +111,16 @@ class LoginScreen:
 	def theme_setting(sender, data):
 		set_theme(data)	
 
-	def t2_tick():
+	# def t2_tick():
 		
-		# self.t2_counter += 1
+	# 	# self.t2_counter += 1
 
-		delete_item('##list2')
-		add_listbox('##list2', before='\n\n ') #items=str(t2_counter))
+	# 	delete_item('##list2')
+	# 	add_listbox('##list2', before='\n\n ') #items=str(t2_counter))
 	
 
 
-	 #items=str(t2_counter)
+	#  #items=str(t2_counter)
 	
 
 
@@ -112,136 +142,480 @@ class LoginScreen:
 					add_menu_item(parent=' options', name='style editor', callback=show_style_editor)
 					end()
 
-				add_text('\n\n')
-				add_text(f'T1 tickets: {str(t1)}')
+				with tab_bar(name='tab_bar_1', parent='chi'):  # Parent tab bar - contains all the respective tabs
+					Tab('Tickets', 'tab_bar_1').generate(True)
 
-				def t1_tick():
-					global t1, total
-					delete_item(f'T1 tickets: {str(t1)}')
-					delete_item(f'Total: {str(total)}')
-					t1 += 1
-					total += 1
-					add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
-					add_text(f'Total: {str(total)}', before='\n\n\n', color=[255,215,0])
-					with open('boolean_check.txt', 'w') as f:
-						f.write(str(t1))
 
-				def t1_downtick():
-					global t1, total
-					delete_item(f'T1 tickets: {str(t1)}')
-					delete_item(f'Total: {str(total)}')
-					t1 -= 1
-					total -= 1
-					add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
-					add_text(f'Total: {str(total)}', before='\n\n\n', color=[255,215,0])
-					with open('boolean_check.txt', 'w') as f:
-						f.write(str(t1))
-				
-				add_text(' \n\n')
-				add_button(name='Add T1', width=60, height=40, callback=t1_tick)
-				add_same_line(spacing=10)
-				add_button(name='Reduce T1', height=40, callback=t1_downtick)
-				add_separator()
 
-				add_text('  \n\n')
-				add_text(f'T2 tickets: {str(t2)}')
+					add_text('\n\n')
+					add_text(f'T1 tickets: {str(t1)}')
 
-				def t2_tick():
-					global t2, total
-					delete_item(f'T2 tickets: {str(t2)}')
-					delete_item(f'Total: {str(total)}')
-					t2 += 1
-					total += 2
-					add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
-					add_text(f'Total: {str(total)}', before='\n\n\n', color=[255,215,0])
-					with open('boolean_check2.txt', 'w') as f:
-						f.write(str(t2))
+					def t1_tick():
+						global t1, total
+						delete_item(f'T1 tickets: {str(t1)}')
+						delete_item(f'Total: {str(total)}')
+						t1 += 1
+						total += 1
+						add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
+						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+						with open('boolean_check.txt', 'w') as f:
+							f.write(str(t1))
 
-				def t2_downtick():
-					global t2, total
-					delete_item(f'Total: {str(total)}')
-					delete_item(f'T2 tickets: {str(t2)}')
-					t2 -= 1
-					total -= 2
-					add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
-					add_text(f'Total: {str(total)}', before='\n\n\n', color=[255,215,0])
-					with open('boolean_check2.txt', 'w') as f:
-						f.write(str(t2))
+					def t1_downtick():
+						global t1, total
+						delete_item(f'T1 tickets: {str(t1)}')
+						delete_item(f'Total: {str(total)}')
+						t1 -= 1
+						total -= 1
+						add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
+						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+						with open('boolean_check.txt', 'w') as f:
+							f.write(str(t1))
+					
+					add_text(' \n\n')
+					add_button(name='Add T1', width=60, height=40, callback=t1_tick)
+					add_same_line(spacing=10)
+					add_button(name='Reduce T1', height=40, callback=t1_downtick)
+					add_separator()
+
+					add_text('  \n\n')
+					add_text(f'T2 tickets: {str(t2)}')
+
+					def t2_tick():
+						global t2, total
+						delete_item(f'T2 tickets: {str(t2)}')
+						delete_item(f'Total: {str(total)}')
+						t2 += 1
+						total += 2
+						add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
+						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+						with open('boolean_check2.txt', 'w') as f:
+							f.write(str(t2))
+
+					def t2_downtick():
+						global t2, total
+						delete_item(f'Total: {str(total)}')
+						delete_item(f'T2 tickets: {str(t2)}')
+						t2 -= 1
+						total -= 2
+						add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
+						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+						with open('boolean_check2.txt', 'w') as f:
+							f.write(str(t2))
+
+						
+					add_text('   \n\n')
+					add_button(name='Add T2', width=60, height=40, callback=t2_tick)
+					add_same_line(spacing=10)
+					add_button(name='Reduce T2', height=40, callback=t2_downtick)
+					add_separator()
+
+
+					add_text('    \n\n')
+					qc_text = add_text(f'QC tickets: {str(qc)}')
+
+					def qc_tick():
+						global qc, total
+						delete_item(f'Total: {str(total)}')
+						delete_item(f'QC tickets: {str(qc)}')
+						qc += 1
+						total += 1
+						add_text(f'QC tickets: {str(qc)}', before='     \n\n')
+						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+						with open('boolean_check3.txt', 'w') as f:
+							f.write(str(qc))
+
+					def qc_downtick():
+						global qc, total
+						delete_item(f'Total: {str(total)}')
+						delete_item(f'QC tickets: {str(qc)}')
+						qc -= 1
+						total -= 1
+						add_text(f'QC tickets: {str(qc)}', before='     \n\n')
+						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+						with open('boolean_check3.txt', 'w') as f:
+							f.write(str(qc))
+
+						
+					add_text('     \n\n')
+					add_button(name='Add QC', width=60, height=40, callback=qc_tick)
+					add_same_line(spacing=10)
+					add_button(name='Reduce QC', height=40, callback=qc_downtick)
+					add_separator()
+
+					add_text('                            \n\n\n')
+					# add_text('                                ')
+					# add_same_line()
+
+					def reset():
+						global t1,t2,qc, total
+						delete_item(f'T1 tickets: {str(t1)}')
+						delete_item(f'T2 tickets: {str(t2)}')
+						delete_item(f'QC tickets: {str(qc)}')
+						delete_item(f'Total: {str(total)}')
+						t1 = 0
+						t2 = 0
+						qc = 0
+						total = 0
+						add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
+						add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
+						add_text(f'QC tickets: {str(qc)}', before='     \n\n')
+						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+						with open('boolean_check.txt', 'w') as f:
+							f.write(str(t1))
+						with open('boolean_check2.txt', 'w') as f2:
+							f.write(str(t2))
+						with open('boolean_check3.txt', 'w') as f3:
+							f.write(str(qc))
 
 					
-				add_text('   \n\n')
-				add_button(name='Add T2', width=60, height=40, callback=t2_tick)
-				add_same_line(spacing=10)
-				add_button(name='Reduce T2', height=40, callback=t2_downtick)
-				add_separator()
 
+					add_text(f'Total: {str(total)}', color=[255,215,0])
+					add_text('                                ')
+					
+					add_button('Save', callback=save)
 
-				add_text('    \n\n')
-				qc_text = add_text(f'QC tickets: {str(qc)}')
+					add_text('                             ')
 
-				def qc_tick():
-					global qc, total
-					delete_item(f'Total: {str(total)}')
-					delete_item(f'QC tickets: {str(qc)}')
-					qc += 1
-					total += 1
-					add_text(f'QC tickets: {str(qc)}', before='     \n\n')
-					add_text(f'Total: {str(total)}', before='\n\n\n', color=[255,215,0])
-					with open('boolean_check3.txt', 'w') as f:
-						f.write(str(qc))
-
-				def qc_downtick():
-					global qc, total
-					delete_item(f'Total: {str(total)}')
-					delete_item(f'QC tickets: {str(qc)}')
-					qc -= 1
-					total -= 1
-					add_text(f'QC tickets: {str(qc)}', before='     \n\n')
-					add_text(f'Total: {str(total)}', before='\n\n\n', color=[255,215,0])
-					with open('boolean_check3.txt', 'w') as f:
-						f.write(str(qc))
+					# add_same_line()
+					add_button('Reset All', small=True, callback=reset)
 
 					
-				add_text('     \n\n')
-				add_button(name='Add QC', width=60, height=40, callback=qc_tick)
-				add_same_line(spacing=10)
-				add_button(name='Reduce QC', height=40, callback=qc_downtick)
-				add_separator()
 
-				add_text('                            \n\n\n')
-				add_text('                              ')
-				add_same_line()
+					add_text('\n\n\n')
 
-				def reset():
-					global t1,t2,qc, total
-					delete_item(f'T1 tickets: {str(t1)}')
-					delete_item(f'T2 tickets: {str(t2)}')
-					delete_item(f'QC tickets: {str(qc)}')
-					delete_item(f'Total: {str(total)}')
-					t1 = 0
-					t2 = 0
-					qc = 0
-					total = 0
-					add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
-					add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
-					add_text(f'QC tickets: {str(qc)}', before='     \n\n')
-					add_text(f'Total: {str(total)}', before='\n\n\n', color=[255,215,0])
-					with open('boolean_check.txt', 'w') as f:
-						f.write(str(t1))
-					with open('boolean_check2.txt', 'w') as f:
-						f.write(str(t2))
-					with open('boolean_check3.txt', 'w') as f:
-						f.write(str(qc))
+					################### Stats #####################
+
+					"""
+					Have a "save" button that will save each day based on system date, 
+					and will calculate the average ticket handling amount per hour/ day / total tickets 
+					per week. 1 week will be Saturday through Wednesday 
+
+					vertically stacked columns, cph/tph, (contacts/tickets per hour)
+
+					add a third tab for past data
+
+					"""
+					end()
+
+					# Tab 2
+
+					Tab('Stats', 'tab_bar_1').generate(True)
+
+					add_text('                                                   ')
+
+					if int(datetime.now().strftime('%d')) <= 7:
+
+						add_text(f'Current week: 1   |   {datetime.now().strftime("%B %d, %Y")}')
+
+					elif int(datetime.now().strftime('%d')) >= 8 and int(datetime.now().strftime('%d')) <= 14:
+					
+						add_text(f'Current week: 2   |   {datetime.now().strftime("%B %d, %Y")}')
+
+					elif int(datetime.now().strftime('%d')) >= 15 and int(datetime.now().strftime('%d')) <= 21:
+
+						add_text(f'Current week: 3   |   {datetime.now().strftime("%B %d, %Y")}')
+
+					elif int(datetime.now().strftime('%d')) >= 22 and int(datetime.now().strftime('%d')) <= 28:
+
+						add_text(f'Current week: 4   |   {datetime.now().strftime("%B %d, %Y")}')
+
+					else:
+
+						add_text(f'Current week: 5   |   {datetime.now().strftime("%B %d, %Y")}')
 
 
-				add_button('Reset All', small=True, callback=reset)
+					# Add columns that name themselves using the current day of week, as to match shift days
 
-				
-				add_text(f'Total: {str(total)}', color=[255,215,0])
+					add_text('                                                           ')
 
-				add_text('\n\n\n')
+					with tab_bar(name='tab_bar_2', parent='Stats'):  # Parent tab bar - contains all the respective tabs
 
-				# add_separator()
+						Tab('Week 1', 'tab_bar_2').generate(True)
+						# add_table('table 1', headers=['Monday', 'Tuesday', 'Wednesday'], height=100)
+						# add_table('table 2', headers=['Thursday', 'Friday', 'Saturday'], height=100)
+						# add_table('table 3', headers=['Sunday'], height=100)
+						# add_table('table 4', headers=[])
+						# Column('table 4','Monday',['data 1', 'data 2']).generate(),
+						# add_column(table='table 4', name='test column', column=['one', 'two', 'three'])
+						
+						with open('test.txt', 'r') as f:
+							lines = f.readlines()
+							for line in lines:
+								if datetime.now().strftime('%A') in line:
+									now = line.replace(datetime.now().strftime('%A')+' ', '')
+
+						add_listbox(
+							name='##list 1',
+							parent='Week 1', 
+							items=['',
+								   'Saturday: ',
+								   '',
+								   'Sunday: \n',
+								   '',
+								   'Monday: \n',
+								   '',
+								   'Tuesday: \n',
+								   '',
+								  f'Wednesday: {now}Hourly Average: {11}',
+								   ], 
+							num_items=30, 
+							width=486)
+						# add_listbox('##list 2', parent='HSK2', items=[i for i in hsk2], num_items=25)
+						# add_listbox('##list 3', parent='HSK3', items=[i for i in hsk3], num_items=25)
+						end()
+
+						Tab('Week 2', 'tab_bar_2').generate(True)
+
+						add_separator()
+						with managed_columns('row 1', 5):
+							add_text('Saturday')
+							add_text('Sunday')
+							add_text('Monday')
+							add_text('Tuesday')
+							add_text('Wednesday')
+						add_separator()
+						with managed_columns('blank 1',5):
+							add_text('')
+						with managed_columns('row 2', 5):
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+					
+						with managed_columns('row 3', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 2', 5):
+							add_text('')
+
+						add_separator()
+
+						with managed_columns('blank 3', 5):
+							add_text('')
+
+						with managed_columns('row 4', 5):
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+						
+						with managed_columns('row 5', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 4',5):
+							add_text('')
+
+						add_separator()
+						add_text('')
+						add_text('')
+						add_text('')
+						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per day week 1: ', color=[255,215,0])
+
+						end()
+						Tab('Week 3', 'tab_bar_2').generate(True)
+						add_separator()
+						with managed_columns('row 11', 5):
+							add_text('Saturday')
+							add_text('Sunday')
+							add_text('Monday')
+							add_text('Tuesday')
+							add_text('Wednesday')
+						add_separator()
+						with managed_columns('blank 11',5):
+							add_text('')
+						with managed_columns('row 22', 5):
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+					
+						with managed_columns('row 33', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 22', 5):
+							add_text('')
+
+						add_separator()
+
+						with managed_columns('blank 33', 5):
+							add_text('')
+
+						with managed_columns('row 44', 5):
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+						
+						with managed_columns('row 55', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 44',5):
+							add_text('')
+
+						add_separator()
+						add_text('')
+						add_text('')
+						add_text('')
+						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per day week 1: ', color=[255,215,0])
+
+						end()
+						Tab('Week 4', 'tab_bar_2').generate(True)
+						add_separator()
+						with managed_columns('row 111', 5):
+							add_text('Saturday')
+							add_text('Sunday')
+							add_text('Monday')
+							add_text('Tuesday')
+							add_text('Wednesday')
+						add_separator()
+						with managed_columns('blank 111',5):
+							add_text('')
+						with managed_columns('row 222', 5):
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+					
+						with managed_columns('row 333', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 222', 5):
+							add_text('')
+
+						add_separator()
+
+						with managed_columns('blank 333', 5):
+							add_text('')
+
+						with managed_columns('row 444', 5):
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+						
+						with managed_columns('row 555', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 444',5):
+							add_text('')
+
+						add_separator()
+						add_text('')
+						add_text('')
+						add_text('')
+						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per day week 1: ', color=[255,215,0])
+
+						end()
+						Tab('Week 5', 'tab_bar_2').generate(True)
+						add_separator()
+						with managed_columns('row 1111', 5):
+							add_text('Saturday')
+							add_text('Sunday')
+							add_text('Monday')
+							add_text('Tuesday')
+							add_text('Wednesday')
+						add_separator()
+						with managed_columns('blank 1111',5):
+							add_text('')
+						with managed_columns('row 2222', 5):
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+					
+						with managed_columns('row 3333', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 2222', 5):
+							add_text('')
+
+						add_separator()
+
+						with managed_columns('blank 3333', 5):
+							add_text('')
+
+						with managed_columns('row 4444', 5):
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+						
+						with managed_columns('row 5555', 5):
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text('0', bullet=True)
+							add_text(f'{now}', bullet=True)
+						with managed_columns('blank 4444',5):
+							add_text('')
+
+						add_separator()
+						add_text('')
+						add_text('')
+						add_text('')
+						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						add_text('')
+						add_text('Average tickets per day week 1: ', color=[255,215,0])
+
+						end()
+
+
+						Tab('Monthly Stats', 'tab_bar_2').generate(True)
+						
+
+						end()
+						
+
+
+						Tab('Past', 'tab_bar_1').generate(True)
+
+						end()
+					
+
 				
 
 if __name__ == '__main__':
@@ -256,10 +630,10 @@ if __name__ == '__main__':
 with open('boolean_check.txt', 'w') as f:
 	f.write(str(t1))
 
-with open('boolean_check2.txt', 'w') as f:
-	f.write(str(t2))
+with open('boolean_check2.txt', 'w') as f2:
+	f2.write(str(t2))
 
-with open('boolean_check3.txt', 'w') as f:
-	f.write(str(qc))
+with open('boolean_check3.txt', 'w') as f3:
+	f3.write(str(qc))
 
 #################################################################
