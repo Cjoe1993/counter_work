@@ -1,0 +1,7 @@
+Monday 90
+Tuesday 90
+Wednesday 90
+Thursday 0
+Friday 0
+Saturday 90
+Sunday 90
