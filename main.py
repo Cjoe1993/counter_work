@@ -1,6 +1,8 @@
+
 from dearpygui.core import *
 from dearpygui.simple import *
 from datetime import datetime
+
 
 
 ###################################################################
@@ -35,15 +37,9 @@ except:
 
 ###################################################################
 
-#######################################
-# Save function
-
-def save():
-	pass
-
 
 #######################################
-
+# ticket values
 
 a=t1
 b=t2*2
@@ -52,7 +48,83 @@ total = int(a+b+c)
 
 
 
+#######################################
+# Save function
 
+month = datetime.now().strftime('%B')
+date_numeric = datetime.now().strftime('%d')
+
+
+# Assigning correct file to open based on day of month
+
+if int(date_numeric) <= 7:
+
+	current_week = 'week_1.txt'
+
+elif int(date_numeric) >= 8 and int(datetime.now().strftime('%d')) <= 14:
+				
+	current_week = 'week_2.txt'
+
+elif int(date_numeric) >= 15 and int(datetime.now().strftime('%d')) <= 21:
+
+	current_week = 'week_3.txt'
+
+elif int(date_numeric) >= 22 and int(datetime.now().strftime('%d')) <= 28:
+
+	current_week = 'week_4.txt'
+
+else:
+
+	current_week = 'week_5.txt'
+
+
+
+
+def save():
+	"""
+
+	'%B' == Month
+	'%d' == 15
+	'%A' == Day
+
+	"""
+
+	day = datetime.now().strftime('%A')
+
+	
+
+	# Assigning an integer that can be used as list indices
+
+	if day == 'Monday':
+		day_value = 0
+	elif day == 'Tuesday':
+		day_value = 1
+	elif day == 'Wednesday':
+		day_value = 2
+	elif day == 'Thursday':
+		day_value = 3
+	elif day == 'Friday':
+		day_value = 4
+	elif day == 'Saturday':
+		day_value = 5
+	else: 
+		day_value = 6
+
+	# Rewriting text file with saved data	
+
+	new_document = ''
+
+	with open(f'{month}/{current_week}', 'r') as f:
+		lines = f.readlines()
+
+	with open(f'{month}/{current_week}', 'w') as f:
+		lines[day_value] = f'{day} {total}\n'
+		for line in lines:
+			new_document+=line
+		f.write(str(new_document))
+
+
+		
 class ConstructGui:
 
 	def __init__(self, width, height):
@@ -110,18 +182,6 @@ class LoginScreen:
 
 	def theme_setting(sender, data):
 		set_theme(data)	
-
-	# def t2_tick():
-		
-	# 	# self.t2_counter += 1
-
-	# 	delete_item('##list2')
-	# 	add_listbox('##list2', before='\n\n ') #items=str(t2_counter))
-	
-
-
-	#  #items=str(t2_counter)
-	
 
 
 	with window('Jake counter'):
@@ -331,43 +391,186 @@ class LoginScreen:
 
 					with tab_bar(name='tab_bar_2', parent='Stats'):  # Parent tab bar - contains all the respective tabs
 
+						def color_check(x):
+
+							if float(x) < 8:
+								add_text(
+									f'{x}', 
+									bullet=True, 
+									color=[255,0,0])
+							else:
+								add_text(
+									f'{x}', 
+									bullet=True, 
+									color=[0,255,0])
+
+						def color_check_2(x,minimum):
+							"""
+							Because I cannot be bothered to change 
+							params for every single instance of color_checker...
+							"""
+							if float(x) < minimum:
+								add_text(
+									f'\t\t{x}', 
+									bullet=False, 
+									color=[255,0,0])
+							else:
+								add_text(
+									f'\t\t{x}', 
+									bullet=False, 
+									color=[0,255,0])
+
 						Tab('Week 1', 'tab_bar_2').generate(True)
-						# add_table('table 1', headers=['Monday', 'Tuesday', 'Wednesday'], height=100)
-						# add_table('table 2', headers=['Thursday', 'Friday', 'Saturday'], height=100)
-						# add_table('table 3', headers=['Sunday'], height=100)
-						# add_table('table 4', headers=[])
-						# Column('table 4','Monday',['data 1', 'data 2']).generate(),
-						# add_column(table='table 4', name='test column', column=['one', 'two', 'three'])
-						
-						with open('test.txt', 'r') as f:
+					
+						with open(f'{month}/week_1.txt', 'r') as f:
+							days = [
+							'Monday',
+							'Tuesday',
+							'Wednesday',
+							'Thursday',
+							'Friday',
+							'Saturday',
+							'Sunday'
+							]
 							lines = f.readlines()
 							for line in lines:
-								if datetime.now().strftime('%A') in line:
-									now = line.replace(datetime.now().strftime('%A')+' ', '')
 
-						add_listbox(
-							name='##list 1',
-							parent='Week 1', 
-							items=['',
-								   'Saturday: ',
-								   '',
-								   'Sunday: \n',
-								   '',
-								   'Monday: \n',
-								   '',
-								   'Tuesday: \n',
-								   '',
-								  f'Wednesday: {now}Hourly Average: {11}',
-								   ], 
-							num_items=30, 
-							width=486)
-						# add_listbox('##list 2', parent='HSK2', items=[i for i in hsk2], num_items=25)
-						# add_listbox('##list 3', parent='HSK3', items=[i for i in hsk3], num_items=25)
+								if days[5] in line:
+									sat = line.replace('Saturday'+' ','')
+									sat_avg = float(sat)/8
+									sat_avg = "{:.3f}".format(sat_avg)
+								if days[6] in line:
+									sun = line.replace('Sunday'+' ','')
+									sun_avg = float(sun)/8
+									sun_avg = "{:.3f}".format(sun_avg)
+								if days[0] in line:
+									mon = line.replace('Monday'+' ','')
+									mon_avg = float(mon)/8
+									mon_avg = "{:.3f}".format(mon_avg)
+								if days[1] in line:
+									tue = line.replace('Tuesday'+' ','')
+									tue_avg = float(tue)/8
+									tue_avg = "{:.3f}".format(tue_avg)
+								if days[2] in line:
+									wed = line.replace('Wednesday'+' ','')
+									wed_avg = float(wed)/8
+									wed_avg = "{:.3f}".format(wed_avg)
+
+							# Grab averages each week
+
+							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+							week_avg = week_total/40
+							daily_avg = week_total/5
+						
+						with managed_columns('row1', 5):
+							add_text('Saturday')
+							add_text('Sunday')
+							add_text('Monday')
+							add_text('Tuesday')
+							add_text('Wednesday')
+						add_separator()
+						with managed_columns('blank1',5):
+							add_text('')
+						with managed_columns('row2', 5):
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+							add_text('Total')
+					
+						with managed_columns('row3', 5):
+							add_text(f'{sat}', bullet=True)
+							add_text(f'{sun}', bullet=True)
+							add_text(f'{mon}', bullet=True)
+							add_text(f'{tue}', bullet=True)
+							add_text(f'{wed}', bullet=True)
+						with managed_columns('blank2', 5):
+							add_text('')
+
+						add_separator()
+
+						with managed_columns('blank3', 5):
+							add_text('')
+
+						with managed_columns('row4', 5):
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+							add_text('Hourly Avg')
+						
+						with managed_columns('row5', 5):
+							color_check(sat_avg)
+							color_check(sun_avg)
+							color_check(mon_avg)
+							color_check(tue_avg)
+							color_check(wed_avg)
+						with managed_columns('blank4',5):
+							add_text('')
+
+						add_separator()
+						add_text('')
+						add_text('')
+						add_text('')
+						add_text('Total tickets week 1')
+						add_text('')
+						color_check_2(week_total, 320)
+						add_text('')
+						add_text('Average tickets per hour week 1')
+						add_text('')
+						color_check_2(week_avg, 8)
+						add_text('')
+						add_text('Average tickets per day week 1')
+						add_text('')
+						color_check_2(daily_avg, 64)
 						end()
+
+
 
 						Tab('Week 2', 'tab_bar_2').generate(True)
 
+						with open(f'{month}/week_2.txt', 'r') as f:
+							days = [
+							'Monday',
+							'Tuesday',
+							'Wednesday',
+							'Thursday',
+							'Friday',
+							'Saturday',
+							'Sunday'
+							]
+							lines = f.readlines()
+							for line in lines:
+
+								if days[5] in line:
+									sat = line.replace('Saturday'+' ','')
+									sat_avg = float(sat)/8
+									sat_avg = "{:.3f}".format(sat_avg)
+								if days[6] in line:
+									sun = line.replace('Sunday'+' ','')
+									sun_avg = float(sun)/8
+									sun_avg = "{:.3f}".format(sun_avg)
+								if days[0] in line:
+									mon = line.replace('Monday'+' ','')
+									mon_avg = float(mon)/8
+									mon_avg = "{:.3f}".format(mon_avg)
+								if days[1] in line:
+									tue = line.replace('Tuesday'+' ','')
+									tue_avg = float(tue)/8
+									tue_avg = "{:.3f}".format(tue_avg)
+								if days[2] in line:
+									wed = line.replace('Wednesday'+' ','')
+									wed_avg = float(wed)/8
+									wed_avg = "{:.3f}".format(wed_avg)
+
+							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+							week_avg = week_total/40
+							daily_avg = week_total/5
+
 						add_separator()
+
+					
+
 						with managed_columns('row 1', 5):
 							add_text('Saturday')
 							add_text('Sunday')
@@ -385,11 +588,11 @@ class LoginScreen:
 							add_text('Total')
 					
 						with managed_columns('row 3', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							add_text(f'{sat}', bullet=True)
+							add_text(f'{sun}', bullet=True)
+							add_text(f'{mon}', bullet=True)
+							add_text(f'{tue}', bullet=True)
+							add_text(f'{wed}', bullet=True)
 						with managed_columns('blank 2', 5):
 							add_text('')
 
@@ -406,11 +609,11 @@ class LoginScreen:
 							add_text('Hourly Avg')
 						
 						with managed_columns('row 5', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							color_check(sat_avg)
+							color_check(sun_avg)
+							color_check(mon_avg)
+							color_check(tue_avg)
+							color_check(wed_avg)
 						with managed_columns('blank 4',5):
 							add_text('')
 
@@ -418,14 +621,59 @@ class LoginScreen:
 						add_text('')
 						add_text('')
 						add_text('')
-						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('Total tickets week 2')
 						add_text('')
-						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						color_check_2(week_total, 320)
 						add_text('')
-						add_text('Average tickets per day week 1: ', color=[255,215,0])
+						add_text('Average tickets per hour week 2')
+						add_text('')
+						color_check_2(week_avg, 8)
+						add_text('')
+						add_text('Average tickets per day week 2')
+						add_text('')
+						color_check_2(daily_avg, 64)
 
 						end()
+
 						Tab('Week 3', 'tab_bar_2').generate(True)
+						with open(f'{month}/week_3.txt', 'r') as f:
+							days = [
+							'Monday',
+							'Tuesday',
+							'Wednesday',
+							'Thursday',
+							'Friday',
+							'Saturday',
+							'Sunday'
+							]
+							lines = f.readlines()
+							for line in lines:
+
+								if days[5] in line:
+									sat = line.replace('Saturday'+' ','')
+									sat_avg = float(sat)/8
+									sat_avg = "{:.3f}".format(sat_avg)
+								if days[6] in line:
+									sun = line.replace('Sunday'+' ','')
+									sun_avg = float(sun)/8
+									sun_avg = "{:.3f}".format(sun_avg)
+								if days[0] in line:
+									mon = line.replace('Monday'+' ','')
+									mon_avg = float(mon)/8
+									mon_avg = "{:.3f}".format(mon_avg)
+								if days[1] in line:
+									tue = line.replace('Tuesday'+' ','')
+									tue_avg = float(tue)/8
+									tue_avg = "{:.3f}".format(tue_avg)
+								if days[2] in line:
+									wed = line.replace('Wednesday'+' ','')
+									wed_avg = float(wed)/8
+									wed_avg = "{:.3f}".format(wed_avg)
+
+							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+							week_avg = week_total/40
+							daily_avg = week_total/5
+
 						add_separator()
 						with managed_columns('row 11', 5):
 							add_text('Saturday')
@@ -444,11 +692,11 @@ class LoginScreen:
 							add_text('Total')
 					
 						with managed_columns('row 33', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							add_text(f'{sat}', bullet=True)
+							add_text(f'{sun}', bullet=True)
+							add_text(f'{mon}', bullet=True)
+							add_text(f'{tue}', bullet=True)
+							add_text(f'{wed}', bullet=True)
 						with managed_columns('blank 22', 5):
 							add_text('')
 
@@ -465,11 +713,11 @@ class LoginScreen:
 							add_text('Hourly Avg')
 						
 						with managed_columns('row 55', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							color_check(sat_avg)
+							color_check(sun_avg)
+							color_check(mon_avg)
+							color_check(tue_avg)
+							color_check(wed_avg)
 						with managed_columns('blank 44',5):
 							add_text('')
 
@@ -477,14 +725,59 @@ class LoginScreen:
 						add_text('')
 						add_text('')
 						add_text('')
-						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('Total tickets week 3')
 						add_text('')
-						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						color_check_2(week_total, 320)
 						add_text('')
-						add_text('Average tickets per day week 1: ', color=[255,215,0])
+						add_text('Average tickets per hour week 3')
+						add_text('')
+						color_check_2(week_avg, 8)
+						add_text('')
+						add_text('Average tickets per day week 3')
+						add_text('')
+						color_check_2(daily_avg, 64)
 
 						end()
+
 						Tab('Week 4', 'tab_bar_2').generate(True)
+						with open(f'{month}/week_4.txt', 'r') as f:
+							days = [
+							'Monday',
+							'Tuesday',
+							'Wednesday',
+							'Thursday',
+							'Friday',
+							'Saturday',
+							'Sunday'
+							]
+							lines = f.readlines()
+							for line in lines:
+
+								if days[5] in line:
+									sat = line.replace('Saturday'+' ','')
+									sat_avg = float(sat)/8
+									sat_avg = "{:.3f}".format(sat_avg)
+								if days[6] in line:
+									sun = line.replace('Sunday'+' ','')
+									sun_avg = float(sun)/8
+									sun_avg = "{:.3f}".format(sun_avg)
+								if days[0] in line:
+									mon = line.replace('Monday'+' ','')
+									mon_avg = float(mon)/8
+									mon_avg = "{:.3f}".format(mon_avg)
+								if days[1] in line:
+									tue = line.replace('Tuesday'+' ','')
+									tue_avg = float(tue)/8
+									tue_avg = "{:.3f}".format(tue_avg)
+								if days[2] in line:
+									wed = line.replace('Wednesday'+' ','')
+									wed_avg = float(wed)/8
+									wed_avg = "{:.3f}".format(wed_avg)
+
+							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+							week_avg = week_total/40
+							daily_avg = week_total/5
+
 						add_separator()
 						with managed_columns('row 111', 5):
 							add_text('Saturday')
@@ -503,11 +796,11 @@ class LoginScreen:
 							add_text('Total')
 					
 						with managed_columns('row 333', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							add_text(f'{sat}', bullet=True)
+							add_text(f'{sun}', bullet=True)
+							add_text(f'{mon}', bullet=True)
+							add_text(f'{tue}', bullet=True)
+							add_text(f'{wed}', bullet=True)
 						with managed_columns('blank 222', 5):
 							add_text('')
 
@@ -524,11 +817,11 @@ class LoginScreen:
 							add_text('Hourly Avg')
 						
 						with managed_columns('row 555', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							color_check(sat_avg)
+							color_check(sun_avg)
+							color_check(mon_avg)
+							color_check(tue_avg)
+							color_check(wed_avg)
 						with managed_columns('blank 444',5):
 							add_text('')
 
@@ -536,14 +829,59 @@ class LoginScreen:
 						add_text('')
 						add_text('')
 						add_text('')
-						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('Total tickets week 4')
 						add_text('')
-						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						color_check_2(week_total, 320)
 						add_text('')
-						add_text('Average tickets per day week 1: ', color=[255,215,0])
+						add_text('Average tickets per hour week 4')
+						add_text('')
+						color_check_2(week_avg, 8)
+						add_text('')
+						add_text('Average tickets per day week 4')
+						add_text('')
+						color_check_2(daily_avg, 64)
 
 						end()
+
 						Tab('Week 5', 'tab_bar_2').generate(True)
+						with open(f'{month}/week_5.txt', 'r') as f:
+							days = [
+							'Monday',
+							'Tuesday',
+							'Wednesday',
+							'Thursday',
+							'Friday',
+							'Saturday',
+							'Sunday'
+							]
+							lines = f.readlines()
+							for line in lines:
+
+								if days[5] in line:
+									sat = line.replace('Saturday'+' ','')
+									sat_avg = float(sat)/8
+									sat_avg = "{:.3f}".format(sat_avg)
+								if days[6] in line:
+									sun = line.replace('Sunday'+' ','')
+									sun_avg = float(sun)/8
+									sun_avg = "{:.3f}".format(sun_avg)
+								if days[0] in line:
+									mon = line.replace('Monday'+' ','')
+									mon_avg = float(mon)/8
+									mon_avg = "{:.3f}".format(mon_avg)
+								if days[1] in line:
+									tue = line.replace('Tuesday'+' ','')
+									tue_avg = float(tue)/8
+									tue_avg = "{:.3f}".format(tue_avg)
+								if days[2] in line:
+									wed = line.replace('Wednesday'+' ','')
+									wed_avg = float(wed)/8
+									wed_avg = "{:.3f}".format(wed_avg)
+
+							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+							week_avg = week_total/40
+							daily_avg = week_total/5
+
 						add_separator()
 						with managed_columns('row 1111', 5):
 							add_text('Saturday')
@@ -562,11 +900,11 @@ class LoginScreen:
 							add_text('Total')
 					
 						with managed_columns('row 3333', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							add_text(f'{sat}', bullet=True)
+							add_text(f'{sun}', bullet=True)
+							add_text(f'{mon}', bullet=True)
+							add_text(f'{tue}', bullet=True)
+							add_text(f'{wed}', bullet=True)
 						with managed_columns('blank 2222', 5):
 							add_text('')
 
@@ -583,11 +921,11 @@ class LoginScreen:
 							add_text('Hourly Avg')
 						
 						with managed_columns('row 5555', 5):
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text('0', bullet=True)
-							add_text(f'{now}', bullet=True)
+							color_check(sat_avg)
+							color_check(sun_avg)
+							color_check(mon_avg)
+							color_check(tue_avg)
+							color_check(wed_avg)
 						with managed_columns('blank 4444',5):
 							add_text('')
 
@@ -595,11 +933,17 @@ class LoginScreen:
 						add_text('')
 						add_text('')
 						add_text('')
-						add_text('Total tickets week 1: ', color=[255,215,0])
+						add_text('Total tickets week 5')
 						add_text('')
-						add_text('Average tickets per hour week 1: ', color=[255,215,0])
+						color_check_2(week_total, 320)
 						add_text('')
-						add_text('Average tickets per day week 1: ', color=[255,215,0])
+						add_text('Average tickets per hour week 5')
+						add_text('')
+						color_check_2(week_avg, 8)
+						add_text('')
+						add_text('Average tickets per day week 5')
+						add_text('')
+						color_check_2(daily_avg, 64)
 
 						end()
 
@@ -637,3 +981,4 @@ with open('boolean_check3.txt', 'w') as f3:
 	f3.write(str(qc))
 
 #################################################################
+
