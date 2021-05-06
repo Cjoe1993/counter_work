@@ -2,6 +2,7 @@
 from dearpygui.core import *
 from dearpygui.simple import *
 from datetime import datetime
+import os
 
 
 
@@ -89,6 +90,16 @@ def save():
 
 	"""
 
+	save_format = """
+Monday 0
+Tuesday 0
+Wednesday 0
+Thursday 0
+Friday 0
+Saturday 0
+Sunday 0
+  """
+
 	day = datetime.now().strftime('%A')
 
 	
@@ -123,6 +134,49 @@ def save():
 			new_document+=line
 		f.write(str(new_document))
 
+	# try:
+
+	# 	with open(f'2021/{month}/{current_week}', 'r') as f:
+	# 		lines = f.readlines()
+
+
+	# 	with open(f'2021/{month}/{current_week}', 'w') as f:
+	# 		lines[day_value] = f'{day} {total}\n'
+	# 		for line in lines:
+	# 			new_document+=line
+	# 		f.write(str(new_document))
+	# except:
+
+	# 	if 
+
+	# 	# Directory
+	# 	directory = f'{month}'
+		  
+	# 	# Parent Directory path
+	# 	parent_dir = "~/Projects/counter_jake/2021/"
+		  
+	# 	# Path
+	# 	path = os.path.join(parent_dir, directory)
+		  
+	# 	# Create the directory
+	# 	# 'GeeksForGeeks' in
+	# 	# '/home / User / Documents'
+
+	# 	os.mkdir(path)
+	# 	with open(f'2021/{month}/{current_week}', 'x') as f:
+	# 		print('Creating database directory. . .')
+	# 		with open(f'2021/{month}/{current_week}', 'w') as f:
+	# 			f.write(save_format)
+
+
+	# 	with open(f'2021/{month}/{current_week}', 'r') as f:
+	# 		lines = f.readlines()
+
+	# 	with open(f'2021/{month}/{current_week}', 'w') as f:
+	# 		lines[day_value] = f'{day} {total}\n'
+	# 		for line in lines:
+	# 			new_document+=line
+	# 		f.write(str(new_document))
 
 		
 class ConstructGui:
@@ -183,6 +237,7 @@ class LoginScreen:
 	def theme_setting(sender, data):
 		set_theme(data)	
 
+	# Initializing main window	
 
 	with window('Jake counter'):
 
@@ -346,16 +401,6 @@ class LoginScreen:
 
 					################### Stats #####################
 
-					"""
-					Have a "save" button that will save each day based on system date, 
-					and will calculate the average ticket handling amount per hour/ day / total tickets 
-					per week. 1 week will be Saturday through Wednesday 
-
-					vertically stacked columns, cph/tph, (contacts/tickets per hour)
-
-					add a third tab for past data
-
-					"""
 					end()
 
 					# Tab 2
@@ -420,546 +465,552 @@ class LoginScreen:
 									bullet=False, 
 									color=[0,255,0])
 
-						Tab('Week 1', 'tab_bar_2').generate(True)
-					
-						with open(f'{month}/week_1.txt', 'r') as f:
-							days = [
-							'Monday',
-							'Tuesday',
-							'Wednesday',
-							'Thursday',
-							'Friday',
-							'Saturday',
-							'Sunday'
-							]
-							lines = f.readlines()
-							for line in lines:
+						try:
 
-								if days[5] in line:
-									sat = line.replace('Saturday'+' ','')
-									sat_avg = float(sat)/8
-									sat_avg = "{:.3f}".format(sat_avg)
-								if days[6] in line:
-									sun = line.replace('Sunday'+' ','')
-									sun_avg = float(sun)/8
-									sun_avg = "{:.3f}".format(sun_avg)
-								if days[0] in line:
-									mon = line.replace('Monday'+' ','')
-									mon_avg = float(mon)/8
-									mon_avg = "{:.3f}".format(mon_avg)
-								if days[1] in line:
-									tue = line.replace('Tuesday'+' ','')
-									tue_avg = float(tue)/8
-									tue_avg = "{:.3f}".format(tue_avg)
-								if days[2] in line:
-									wed = line.replace('Wednesday'+' ','')
-									wed_avg = float(wed)/8
-									wed_avg = "{:.3f}".format(wed_avg)
+							Tab('Week 1', 'tab_bar_2').generate(True)
+								
+							with open(f'{month}/week_1.txt', 'r') as f:
+								days = [
+								'Monday',
+								'Tuesday',
+								'Wednesday',
+								'Thursday',
+								'Friday',
+								'Saturday',
+								'Sunday'
+								]
+								lines = f.readlines()
+								for line in lines:
 
-							# Grab averages each week
+									if days[5] in line:
+										sat = line.replace('Saturday'+' ','')
+										sat_avg = float(sat)/8
+										sat_avg = "{:.3f}".format(sat_avg)
+									if days[6] in line:
+										sun = line.replace('Sunday'+' ','')
+										sun_avg = float(sun)/8
+										sun_avg = "{:.3f}".format(sun_avg)
+									if days[0] in line:
+										mon = line.replace('Monday'+' ','')
+										mon_avg = float(mon)/8
+										mon_avg = "{:.3f}".format(mon_avg)
+									if days[1] in line:
+										tue = line.replace('Tuesday'+' ','')
+										tue_avg = float(tue)/8
+										tue_avg = "{:.3f}".format(tue_avg)
+									if days[2] in line:
+										wed = line.replace('Wednesday'+' ','')
+										wed_avg = float(wed)/8
+										wed_avg = "{:.3f}".format(wed_avg)
 
-							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
-							week_avg = week_total/40
-							daily_avg = week_total/5
-						
-						with managed_columns('row1', 5):
-							add_text('Saturday')
-							add_text('Sunday')
-							add_text('Monday')
-							add_text('Tuesday')
-							add_text('Wednesday')
-						add_separator()
-						with managed_columns('blank1',5):
-							add_text('')
-						with managed_columns('row2', 5):
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-					
-						with managed_columns('row3', 5):
-							add_text(f'{sat}', bullet=True)
-							add_text(f'{sun}', bullet=True)
-							add_text(f'{mon}', bullet=True)
-							add_text(f'{tue}', bullet=True)
-							add_text(f'{wed}', bullet=True)
-						with managed_columns('blank2', 5):
-							add_text('')
+								# Grab averages each week
 
-						add_separator()
+								week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+								week_avg = week_total/40
+								daily_avg = week_total/5
+							
+								with managed_columns('row1', 5):
+									add_text('Saturday')
+									add_text('Sunday')
+									add_text('Monday')
+									add_text('Tuesday')
+									add_text('Wednesday')
+								add_separator()
+								with managed_columns('blank1',5):
+									add_text('')
+								with managed_columns('row2', 5):
+									add_text('Total')
+									add_text('Total')
+									add_text('Total')
+									add_text('Total')
+									add_text('Total')
+							
+								with managed_columns('row3', 5):
+									add_text(f'{sat}', bullet=True)
+									add_text(f'{sun}', bullet=True)
+									add_text(f'{mon}', bullet=True)
+									add_text(f'{tue}', bullet=True)
+									add_text(f'{wed}', bullet=True)
+								with managed_columns('blank2', 5):
+									add_text('')
 
-						with managed_columns('blank3', 5):
-							add_text('')
+								add_separator()
 
-						with managed_columns('row4', 5):
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-						
-						with managed_columns('row5', 5):
-							color_check(sat_avg)
-							color_check(sun_avg)
-							color_check(mon_avg)
-							color_check(tue_avg)
-							color_check(wed_avg)
-						with managed_columns('blank4',5):
-							add_text('')
+								with managed_columns('blank3', 5):
+									add_text('')
 
-						add_separator()
-						add_text('')
-						add_text('')
-						add_text('')
-						add_text('Total tickets week 1')
-						add_text('')
-						color_check_2(week_total, 320)
-						add_text('')
-						add_text('Average tickets per hour week 1')
-						add_text('')
-						color_check_2(week_avg, 8)
-						add_text('')
-						add_text('Average tickets per day week 1')
-						add_text('')
-						color_check_2(daily_avg, 64)
-						end()
+								with managed_columns('row4', 5):
+									add_text('Hourly Avg')
+									add_text('Hourly Avg')
+									add_text('Hourly Avg')
+									add_text('Hourly Avg')
+									add_text('Hourly Avg')
+								
+								with managed_columns('row5', 5):
+									color_check(sat_avg)
+									color_check(sun_avg)
+									color_check(mon_avg)
+									color_check(tue_avg)
+									color_check(wed_avg)
+								with managed_columns('blank4',5):
+									add_text('')
 
-
-
-						Tab('Week 2', 'tab_bar_2').generate(True)
-
-						with open(f'{month}/week_2.txt', 'r') as f:
-							days = [
-							'Monday',
-							'Tuesday',
-							'Wednesday',
-							'Thursday',
-							'Friday',
-							'Saturday',
-							'Sunday'
-							]
-							lines = f.readlines()
-							for line in lines:
-
-								if days[5] in line:
-									sat = line.replace('Saturday'+' ','')
-									sat_avg = float(sat)/8
-									sat_avg = "{:.3f}".format(sat_avg)
-								if days[6] in line:
-									sun = line.replace('Sunday'+' ','')
-									sun_avg = float(sun)/8
-									sun_avg = "{:.3f}".format(sun_avg)
-								if days[0] in line:
-									mon = line.replace('Monday'+' ','')
-									mon_avg = float(mon)/8
-									mon_avg = "{:.3f}".format(mon_avg)
-								if days[1] in line:
-									tue = line.replace('Tuesday'+' ','')
-									tue_avg = float(tue)/8
-									tue_avg = "{:.3f}".format(tue_avg)
-								if days[2] in line:
-									wed = line.replace('Wednesday'+' ','')
-									wed_avg = float(wed)/8
-									wed_avg = "{:.3f}".format(wed_avg)
-
-							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
-							week_avg = week_total/40
-							daily_avg = week_total/5
-
-						add_separator()
-
-					
-
-						with managed_columns('row 1', 5):
-							add_text('Saturday')
-							add_text('Sunday')
-							add_text('Monday')
-							add_text('Tuesday')
-							add_text('Wednesday')
-						add_separator()
-						with managed_columns('blank 1',5):
-							add_text('')
-						with managed_columns('row 2', 5):
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-					
-						with managed_columns('row 3', 5):
-							add_text(f'{sat}', bullet=True)
-							add_text(f'{sun}', bullet=True)
-							add_text(f'{mon}', bullet=True)
-							add_text(f'{tue}', bullet=True)
-							add_text(f'{wed}', bullet=True)
-						with managed_columns('blank 2', 5):
-							add_text('')
-
-						add_separator()
-
-						with managed_columns('blank 3', 5):
-							add_text('')
-
-						with managed_columns('row 4', 5):
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-						
-						with managed_columns('row 5', 5):
-							color_check(sat_avg)
-							color_check(sun_avg)
-							color_check(mon_avg)
-							color_check(tue_avg)
-							color_check(wed_avg)
-						with managed_columns('blank 4',5):
-							add_text('')
-
-						add_separator()
-						add_text('')
-						add_text('')
-						add_text('')
-						add_text('Total tickets week 2')
-						add_text('')
-						color_check_2(week_total, 320)
-						add_text('')
-						add_text('Average tickets per hour week 2')
-						add_text('')
-						color_check_2(week_avg, 8)
-						add_text('')
-						add_text('Average tickets per day week 2')
-						add_text('')
-						color_check_2(daily_avg, 64)
-
-						end()
-
-						Tab('Week 3', 'tab_bar_2').generate(True)
-						with open(f'{month}/week_3.txt', 'r') as f:
-							days = [
-							'Monday',
-							'Tuesday',
-							'Wednesday',
-							'Thursday',
-							'Friday',
-							'Saturday',
-							'Sunday'
-							]
-							lines = f.readlines()
-							for line in lines:
-
-								if days[5] in line:
-									sat = line.replace('Saturday'+' ','')
-									sat_avg = float(sat)/8
-									sat_avg = "{:.3f}".format(sat_avg)
-								if days[6] in line:
-									sun = line.replace('Sunday'+' ','')
-									sun_avg = float(sun)/8
-									sun_avg = "{:.3f}".format(sun_avg)
-								if days[0] in line:
-									mon = line.replace('Monday'+' ','')
-									mon_avg = float(mon)/8
-									mon_avg = "{:.3f}".format(mon_avg)
-								if days[1] in line:
-									tue = line.replace('Tuesday'+' ','')
-									tue_avg = float(tue)/8
-									tue_avg = "{:.3f}".format(tue_avg)
-								if days[2] in line:
-									wed = line.replace('Wednesday'+' ','')
-									wed_avg = float(wed)/8
-									wed_avg = "{:.3f}".format(wed_avg)
-
-							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
-							week_avg = week_total/40
-							daily_avg = week_total/5
-
-						add_separator()
-						with managed_columns('row 11', 5):
-							add_text('Saturday')
-							add_text('Sunday')
-							add_text('Monday')
-							add_text('Tuesday')
-							add_text('Wednesday')
-						add_separator()
-						with managed_columns('blank 11',5):
-							add_text('')
-						with managed_columns('row 22', 5):
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-					
-						with managed_columns('row 33', 5):
-							add_text(f'{sat}', bullet=True)
-							add_text(f'{sun}', bullet=True)
-							add_text(f'{mon}', bullet=True)
-							add_text(f'{tue}', bullet=True)
-							add_text(f'{wed}', bullet=True)
-						with managed_columns('blank 22', 5):
-							add_text('')
-
-						add_separator()
-
-						with managed_columns('blank 33', 5):
-							add_text('')
-
-						with managed_columns('row 44', 5):
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-						
-						with managed_columns('row 55', 5):
-							color_check(sat_avg)
-							color_check(sun_avg)
-							color_check(mon_avg)
-							color_check(tue_avg)
-							color_check(wed_avg)
-						with managed_columns('blank 44',5):
-							add_text('')
-
-						add_separator()
-						add_text('')
-						add_text('')
-						add_text('')
-						add_text('Total tickets week 3')
-						add_text('')
-						color_check_2(week_total, 320)
-						add_text('')
-						add_text('Average tickets per hour week 3')
-						add_text('')
-						color_check_2(week_avg, 8)
-						add_text('')
-						add_text('Average tickets per day week 3')
-						add_text('')
-						color_check_2(daily_avg, 64)
-
-						end()
-
-						Tab('Week 4', 'tab_bar_2').generate(True)
-						with open(f'{month}/week_4.txt', 'r') as f:
-							days = [
-							'Monday',
-							'Tuesday',
-							'Wednesday',
-							'Thursday',
-							'Friday',
-							'Saturday',
-							'Sunday'
-							]
-							lines = f.readlines()
-							for line in lines:
-
-								if days[5] in line:
-									sat = line.replace('Saturday'+' ','')
-									sat_avg = float(sat)/8
-									sat_avg = "{:.3f}".format(sat_avg)
-								if days[6] in line:
-									sun = line.replace('Sunday'+' ','')
-									sun_avg = float(sun)/8
-									sun_avg = "{:.3f}".format(sun_avg)
-								if days[0] in line:
-									mon = line.replace('Monday'+' ','')
-									mon_avg = float(mon)/8
-									mon_avg = "{:.3f}".format(mon_avg)
-								if days[1] in line:
-									tue = line.replace('Tuesday'+' ','')
-									tue_avg = float(tue)/8
-									tue_avg = "{:.3f}".format(tue_avg)
-								if days[2] in line:
-									wed = line.replace('Wednesday'+' ','')
-									wed_avg = float(wed)/8
-									wed_avg = "{:.3f}".format(wed_avg)
-
-							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
-							week_avg = week_total/40
-							daily_avg = week_total/5
-
-						add_separator()
-						with managed_columns('row 111', 5):
-							add_text('Saturday')
-							add_text('Sunday')
-							add_text('Monday')
-							add_text('Tuesday')
-							add_text('Wednesday')
-						add_separator()
-						with managed_columns('blank 111',5):
-							add_text('')
-						with managed_columns('row 222', 5):
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-					
-						with managed_columns('row 333', 5):
-							add_text(f'{sat}', bullet=True)
-							add_text(f'{sun}', bullet=True)
-							add_text(f'{mon}', bullet=True)
-							add_text(f'{tue}', bullet=True)
-							add_text(f'{wed}', bullet=True)
-						with managed_columns('blank 222', 5):
-							add_text('')
-
-						add_separator()
-
-						with managed_columns('blank 333', 5):
-							add_text('')
-
-						with managed_columns('row 444', 5):
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-						
-						with managed_columns('row 555', 5):
-							color_check(sat_avg)
-							color_check(sun_avg)
-							color_check(mon_avg)
-							color_check(tue_avg)
-							color_check(wed_avg)
-						with managed_columns('blank 444',5):
-							add_text('')
-
-						add_separator()
-						add_text('')
-						add_text('')
-						add_text('')
-						add_text('Total tickets week 4')
-						add_text('')
-						color_check_2(week_total, 320)
-						add_text('')
-						add_text('Average tickets per hour week 4')
-						add_text('')
-						color_check_2(week_avg, 8)
-						add_text('')
-						add_text('Average tickets per day week 4')
-						add_text('')
-						color_check_2(daily_avg, 64)
-
-						end()
-
-						Tab('Week 5', 'tab_bar_2').generate(True)
-						with open(f'{month}/week_5.txt', 'r') as f:
-							days = [
-							'Monday',
-							'Tuesday',
-							'Wednesday',
-							'Thursday',
-							'Friday',
-							'Saturday',
-							'Sunday'
-							]
-							lines = f.readlines()
-							for line in lines:
-
-								if days[5] in line:
-									sat = line.replace('Saturday'+' ','')
-									sat_avg = float(sat)/8
-									sat_avg = "{:.3f}".format(sat_avg)
-								if days[6] in line:
-									sun = line.replace('Sunday'+' ','')
-									sun_avg = float(sun)/8
-									sun_avg = "{:.3f}".format(sun_avg)
-								if days[0] in line:
-									mon = line.replace('Monday'+' ','')
-									mon_avg = float(mon)/8
-									mon_avg = "{:.3f}".format(mon_avg)
-								if days[1] in line:
-									tue = line.replace('Tuesday'+' ','')
-									tue_avg = float(tue)/8
-									tue_avg = "{:.3f}".format(tue_avg)
-								if days[2] in line:
-									wed = line.replace('Wednesday'+' ','')
-									wed_avg = float(wed)/8
-									wed_avg = "{:.3f}".format(wed_avg)
-
-							week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
-							week_avg = week_total/40
-							daily_avg = week_total/5
-
-						add_separator()
-						with managed_columns('row 1111', 5):
-							add_text('Saturday')
-							add_text('Sunday')
-							add_text('Monday')
-							add_text('Tuesday')
-							add_text('Wednesday')
-						add_separator()
-						with managed_columns('blank 1111',5):
-							add_text('')
-						with managed_columns('row 2222', 5):
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-							add_text('Total')
-					
-						with managed_columns('row 3333', 5):
-							add_text(f'{sat}', bullet=True)
-							add_text(f'{sun}', bullet=True)
-							add_text(f'{mon}', bullet=True)
-							add_text(f'{tue}', bullet=True)
-							add_text(f'{wed}', bullet=True)
-						with managed_columns('blank 2222', 5):
-							add_text('')
-
-						add_separator()
-
-						with managed_columns('blank 3333', 5):
-							add_text('')
-
-						with managed_columns('row 4444', 5):
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-							add_text('Hourly Avg')
-						
-						with managed_columns('row 5555', 5):
-							color_check(sat_avg)
-							color_check(sun_avg)
-							color_check(mon_avg)
-							color_check(tue_avg)
-							color_check(wed_avg)
-						with managed_columns('blank 4444',5):
-							add_text('')
-
-						add_separator()
-						add_text('')
-						add_text('')
-						add_text('')
-						add_text('Total tickets week 5')
-						add_text('')
-						color_check_2(week_total, 320)
-						add_text('')
-						add_text('Average tickets per hour week 5')
-						add_text('')
-						color_check_2(week_avg, 8)
-						add_text('')
-						add_text('Average tickets per day week 5')
-						add_text('')
-						color_check_2(daily_avg, 64)
-
-						end()
+								add_separator()
+								add_text('')
+								add_text('')
+								add_text('')
+								add_text('Total tickets week 1')
+								add_text('')
+								color_check_2(week_total, 320)
+								add_text('')
+								add_text('Average tickets per hour week 1')
+								add_text('')
+								color_check_2(week_avg, 8)
+								add_text('')
+								add_text('Average tickets per day week 1')
+								add_text('')
+								color_check_2(daily_avg, 64)
+								end()
 
 
-						Tab('Monthly Stats', 'tab_bar_2').generate(True)
+
+
+							Tab('Week 2', 'tab_bar_2').generate(True)
+
+							with open(f'{month}/week_2.txt', 'r') as f:
+								days = [
+								'Monday',
+								'Tuesday',
+								'Wednesday',
+								'Thursday',
+								'Friday',
+								'Saturday',
+								'Sunday'
+								]
+								lines = f.readlines()
+								for line in lines:
+
+									if days[5] in line:
+										sat = line.replace('Saturday'+' ','')
+										sat_avg = float(sat)/8
+										sat_avg = "{:.3f}".format(sat_avg)
+									if days[6] in line:
+										sun = line.replace('Sunday'+' ','')
+										sun_avg = float(sun)/8
+										sun_avg = "{:.3f}".format(sun_avg)
+									if days[0] in line:
+										mon = line.replace('Monday'+' ','')
+										mon_avg = float(mon)/8
+										mon_avg = "{:.3f}".format(mon_avg)
+									if days[1] in line:
+										tue = line.replace('Tuesday'+' ','')
+										tue_avg = float(tue)/8
+										tue_avg = "{:.3f}".format(tue_avg)
+									if days[2] in line:
+										wed = line.replace('Wednesday'+' ','')
+										wed_avg = float(wed)/8
+										wed_avg = "{:.3f}".format(wed_avg)
+
+								week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+								week_avg = week_total/40
+								daily_avg = week_total/5
+
+							add_separator()
+
 						
 
-						end()
+							with managed_columns('row 1', 5):
+								add_text('Saturday')
+								add_text('Sunday')
+								add_text('Monday')
+								add_text('Tuesday')
+								add_text('Wednesday')
+							add_separator()
+							with managed_columns('blank 1',5):
+								add_text('')
+							with managed_columns('row 2', 5):
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
 						
+							with managed_columns('row 3', 5):
+								add_text(f'{sat}', bullet=True)
+								add_text(f'{sun}', bullet=True)
+								add_text(f'{mon}', bullet=True)
+								add_text(f'{tue}', bullet=True)
+								add_text(f'{wed}', bullet=True)
+							with managed_columns('blank 2', 5):
+								add_text('')
+
+							add_separator()
+
+							with managed_columns('blank 3', 5):
+								add_text('')
+
+							with managed_columns('row 4', 5):
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+							
+							with managed_columns('row 5', 5):
+								color_check(sat_avg)
+								color_check(sun_avg)
+								color_check(mon_avg)
+								color_check(tue_avg)
+								color_check(wed_avg)
+							with managed_columns('blank 4',5):
+								add_text('')
+
+							add_separator()
+							add_text('')
+							add_text('')
+							add_text('')
+							add_text('Total tickets week 2')
+							add_text('')
+							color_check_2(week_total, 320)
+							add_text('')
+							add_text('Average tickets per hour week 2')
+							add_text('')
+							color_check_2(week_avg, 8)
+							add_text('')
+							add_text('Average tickets per day week 2')
+							add_text('')
+							color_check_2(daily_avg, 64)
+
+							end()
+
+							Tab('Week 3', 'tab_bar_2').generate(True)
+							with open(f'{month}/week_3.txt', 'r') as f:
+								days = [
+								'Monday',
+								'Tuesday',
+								'Wednesday',
+								'Thursday',
+								'Friday',
+								'Saturday',
+								'Sunday'
+								]
+								lines = f.readlines()
+								for line in lines:
+
+									if days[5] in line:
+										sat = line.replace('Saturday'+' ','')
+										sat_avg = float(sat)/8
+										sat_avg = "{:.3f}".format(sat_avg)
+									if days[6] in line:
+										sun = line.replace('Sunday'+' ','')
+										sun_avg = float(sun)/8
+										sun_avg = "{:.3f}".format(sun_avg)
+									if days[0] in line:
+										mon = line.replace('Monday'+' ','')
+										mon_avg = float(mon)/8
+										mon_avg = "{:.3f}".format(mon_avg)
+									if days[1] in line:
+										tue = line.replace('Tuesday'+' ','')
+										tue_avg = float(tue)/8
+										tue_avg = "{:.3f}".format(tue_avg)
+									if days[2] in line:
+										wed = line.replace('Wednesday'+' ','')
+										wed_avg = float(wed)/8
+										wed_avg = "{:.3f}".format(wed_avg)
+
+								week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+								week_avg = week_total/40
+								daily_avg = week_total/5
+
+							add_separator()
+							with managed_columns('row 11', 5):
+								add_text('Saturday')
+								add_text('Sunday')
+								add_text('Monday')
+								add_text('Tuesday')
+								add_text('Wednesday')
+							add_separator()
+							with managed_columns('blank 11',5):
+								add_text('')
+							with managed_columns('row 22', 5):
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+						
+							with managed_columns('row 33', 5):
+								add_text(f'{sat}', bullet=True)
+								add_text(f'{sun}', bullet=True)
+								add_text(f'{mon}', bullet=True)
+								add_text(f'{tue}', bullet=True)
+								add_text(f'{wed}', bullet=True)
+							with managed_columns('blank 22', 5):
+								add_text('')
+
+							add_separator()
+
+							with managed_columns('blank 33', 5):
+								add_text('')
+
+							with managed_columns('row 44', 5):
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+							
+							with managed_columns('row 55', 5):
+								color_check(sat_avg)
+								color_check(sun_avg)
+								color_check(mon_avg)
+								color_check(tue_avg)
+								color_check(wed_avg)
+							with managed_columns('blank 44',5):
+								add_text('')
+
+							add_separator()
+							add_text('')
+							add_text('')
+							add_text('')
+							add_text('Total tickets week 3')
+							add_text('')
+							color_check_2(week_total, 320)
+							add_text('')
+							add_text('Average tickets per hour week 3')
+							add_text('')
+							color_check_2(week_avg, 8)
+							add_text('')
+							add_text('Average tickets per day week 3')
+							add_text('')
+							color_check_2(daily_avg, 64)
+
+							end()
+
+							Tab('Week 4', 'tab_bar_2').generate(True)
+							with open(f'{month}/week_4.txt', 'r') as f:
+								days = [
+								'Monday',
+								'Tuesday',
+								'Wednesday',
+								'Thursday',
+								'Friday',
+								'Saturday',
+								'Sunday'
+								]
+								lines = f.readlines()
+								for line in lines:
+
+									if days[5] in line:
+										sat = line.replace('Saturday'+' ','')
+										sat_avg = float(sat)/8
+										sat_avg = "{:.3f}".format(sat_avg)
+									if days[6] in line:
+										sun = line.replace('Sunday'+' ','')
+										sun_avg = float(sun)/8
+										sun_avg = "{:.3f}".format(sun_avg)
+									if days[0] in line:
+										mon = line.replace('Monday'+' ','')
+										mon_avg = float(mon)/8
+										mon_avg = "{:.3f}".format(mon_avg)
+									if days[1] in line:
+										tue = line.replace('Tuesday'+' ','')
+										tue_avg = float(tue)/8
+										tue_avg = "{:.3f}".format(tue_avg)
+									if days[2] in line:
+										wed = line.replace('Wednesday'+' ','')
+										wed_avg = float(wed)/8
+										wed_avg = "{:.3f}".format(wed_avg)
+
+								week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+								week_avg = week_total/40
+								daily_avg = week_total/5
+
+							add_separator()
+							with managed_columns('row 111', 5):
+								add_text('Saturday')
+								add_text('Sunday')
+								add_text('Monday')
+								add_text('Tuesday')
+								add_text('Wednesday')
+							add_separator()
+							with managed_columns('blank 111',5):
+								add_text('')
+							with managed_columns('row 222', 5):
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+						
+							with managed_columns('row 333', 5):
+								add_text(f'{sat}', bullet=True)
+								add_text(f'{sun}', bullet=True)
+								add_text(f'{mon}', bullet=True)
+								add_text(f'{tue}', bullet=True)
+								add_text(f'{wed}', bullet=True)
+							with managed_columns('blank 222', 5):
+								add_text('')
+
+							add_separator()
+
+							with managed_columns('blank 333', 5):
+								add_text('')
+
+							with managed_columns('row 444', 5):
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+							
+							with managed_columns('row 555', 5):
+								color_check(sat_avg)
+								color_check(sun_avg)
+								color_check(mon_avg)
+								color_check(tue_avg)
+								color_check(wed_avg)
+							with managed_columns('blank 444',5):
+								add_text('')
+
+							add_separator()
+							add_text('')
+							add_text('')
+							add_text('')
+							add_text('Total tickets week 4')
+							add_text('')
+							color_check_2(week_total, 320)
+							add_text('')
+							add_text('Average tickets per hour week 4')
+							add_text('')
+							color_check_2(week_avg, 8)
+							add_text('')
+							add_text('Average tickets per day week 4')
+							add_text('')
+							color_check_2(daily_avg, 64)
+
+							end()
+
+							Tab('Week 5', 'tab_bar_2').generate(True)
+							with open(f'{month}/week_5.txt', 'r') as f:
+								days = [
+								'Monday',
+								'Tuesday',
+								'Wednesday',
+								'Thursday',
+								'Friday',
+								'Saturday',
+								'Sunday'
+								]
+								lines = f.readlines()
+								for line in lines:
+
+									if days[5] in line:
+										sat = line.replace('Saturday'+' ','')
+										sat_avg = float(sat)/8
+										sat_avg = "{:.3f}".format(sat_avg)
+									if days[6] in line:
+										sun = line.replace('Sunday'+' ','')
+										sun_avg = float(sun)/8
+										sun_avg = "{:.3f}".format(sun_avg)
+									if days[0] in line:
+										mon = line.replace('Monday'+' ','')
+										mon_avg = float(mon)/8
+										mon_avg = "{:.3f}".format(mon_avg)
+									if days[1] in line:
+										tue = line.replace('Tuesday'+' ','')
+										tue_avg = float(tue)/8
+										tue_avg = "{:.3f}".format(tue_avg)
+									if days[2] in line:
+										wed = line.replace('Wednesday'+' ','')
+										wed_avg = float(wed)/8
+										wed_avg = "{:.3f}".format(wed_avg)
+
+								week_total = float(sat)+float(sun)+float(mon)+float(tue)+float(wed)
+								week_avg = week_total/40
+								daily_avg = week_total/5
+
+							add_separator()
+							with managed_columns('row 1111', 5):
+								add_text('Saturday')
+								add_text('Sunday')
+								add_text('Monday')
+								add_text('Tuesday')
+								add_text('Wednesday')
+							add_separator()
+							with managed_columns('blank 1111',5):
+								add_text('')
+							with managed_columns('row 2222', 5):
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+								add_text('Total')
+						
+							with managed_columns('row 3333', 5):
+								add_text(f'{sat}', bullet=True)
+								add_text(f'{sun}', bullet=True)
+								add_text(f'{mon}', bullet=True)
+								add_text(f'{tue}', bullet=True)
+								add_text(f'{wed}', bullet=True)
+							with managed_columns('blank 2222', 5):
+								add_text('')
+
+							add_separator()
+
+							with managed_columns('blank 3333', 5):
+								add_text('')
+
+							with managed_columns('row 4444', 5):
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+								add_text('Hourly Avg')
+							
+							with managed_columns('row 5555', 5):
+								color_check(sat_avg)
+								color_check(sun_avg)
+								color_check(mon_avg)
+								color_check(tue_avg)
+								color_check(wed_avg)
+							with managed_columns('blank 4444',5):
+								add_text('')
+
+							add_separator()
+							add_text('')
+							add_text('')
+							add_text('')
+							add_text('Total tickets week 5')
+							add_text('')
+							color_check_2(week_total, 320)
+							add_text('')
+							add_text('Average tickets per hour week 5')
+							add_text('')
+							color_check_2(week_avg, 8)
+							add_text('')
+							add_text('Average tickets per day week 5')
+							add_text('')
+							color_check_2(daily_avg, 64)
+
+							end()
 
 
-						Tab('Past', 'tab_bar_1').generate(True)
+							Tab('Monthly Stats', 'tab_bar_2').generate(True)
+							
 
-						end()
+							end()
+							
+
+
+							Tab('Past', 'tab_bar_1').generate(True)
+
+							end()
+
+						except:
+							print('Please save and re-open to create new database')
+
 					
-
 				
 
 if __name__ == '__main__':
@@ -981,4 +1032,3 @@ with open('boolean_check3.txt', 'w') as f3:
 	f3.write(str(qc))
 
 #################################################################
-
