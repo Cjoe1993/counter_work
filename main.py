@@ -134,50 +134,6 @@ Sunday 0
 			new_document+=line
 		f.write(str(new_document))
 
-	# try:
-
-	# 	with open(f'2021/{month}/{current_week}', 'r') as f:
-	# 		lines = f.readlines()
-
-
-	# 	with open(f'2021/{month}/{current_week}', 'w') as f:
-	# 		lines[day_value] = f'{day} {total}\n'
-	# 		for line in lines:
-	# 			new_document+=line
-	# 		f.write(str(new_document))
-	# except:
-
-	# 	if 
-
-	# 	# Directory
-	# 	directory = f'{month}'
-		  
-	# 	# Parent Directory path
-	# 	parent_dir = "~/Projects/counter_jake/2021/"
-		  
-	# 	# Path
-	# 	path = os.path.join(parent_dir, directory)
-		  
-	# 	# Create the directory
-	# 	# 'GeeksForGeeks' in
-	# 	# '/home / User / Documents'
-
-	# 	os.mkdir(path)
-	# 	with open(f'2021/{month}/{current_week}', 'x') as f:
-	# 		print('Creating database directory. . .')
-	# 		with open(f'2021/{month}/{current_week}', 'w') as f:
-	# 			f.write(save_format)
-
-
-	# 	with open(f'2021/{month}/{current_week}', 'r') as f:
-	# 		lines = f.readlines()
-
-	# 	with open(f'2021/{month}/{current_week}', 'w') as f:
-	# 		lines[day_value] = f'{day} {total}\n'
-	# 		for line in lines:
-	# 			new_document+=line
-	# 		f.write(str(new_document))
-
 		
 class ConstructGui:
 
