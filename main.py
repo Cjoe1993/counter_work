@@ -1,13 +1,15 @@
 
+from dearpygui import core
 from dearpygui.core import *
 from dearpygui.simple import *
 from datetime import datetime
-import os
-
+import sys
 
 
 ###################################################################
 #Load data
+keybinds = {'hold': 'hold=ctrl',
+			'press': 'press=set_1'}
 
 try:
 	with open('boolean_check.txt') as checker:
@@ -33,11 +35,163 @@ try:
 		reading = checker3.readlines()
 		for line in reading:
 			qc=int(line.rstrip())
+
 except:
 	pass
 
-###################################################################
+# try:
 
+# 	# once we write values to config.txt, we need to then put them
+# 	# into a function to set the hotkeys each time app is started
+# 	# ie. if keybinds.get('hold') == 'hold=ctrl':
+# 	#		   do something
+# 	hold_keys = {
+# 	'hold': 'hold=ctrl',
+# 	'hold': 'hold=alt',
+# 	'hold': 'hold=shift',
+# 	'hold': 'hold=mod',
+# 	}
+
+# 	press_keys = {
+# 	'press': 'press=set_1',
+# 	'press': 'press=set_2',
+# 	'press': 'press=set_3',
+# 	}
+	# with open('config.txt') as config:
+	# 	reading = config.readlines()
+	# 	# for line in reading:
+	# 	if keybinds.get('hold') in reading[0]:
+	# 		print('Hold keybinding has been loaded.')
+	# 	if keybinds.get('press') in reading[1]:
+	# 		print('Press keybindings have been loaded.')
+# except:
+# 	pass
+
+###################################################################
+# set keyboard shortcuts
+
+# def setHotkeys():
+# 	pass
+
+# set_key_press_callback('key_press_callback')
+
+# def key_press_callback(sender, data):
+#     if is_key_pressed(mvKey_Return):
+#     	print('Return key pressed!')
+matches = ['Shift', 'A']
+
+_KEYMAP = {}
+for const in dir(core):
+	if const.startswith('mvKey_'):
+		val = getattr(core, const)
+		_KEYMAP[val] = const.replace('mvKey_', '')
+
+
+def t1_tick():
+	global t1, total
+	delete_item(f'T1 tickets: {str(t1)}')
+	delete_item(f'Total: {str(total)}')
+	t1 += 1
+	total += 1
+	add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
+	add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+	with open('boolean_check.txt', 'w') as f:
+		f.write(str(t1))
+
+def t2_tick():
+	global t2, total
+	delete_item(f'T2 tickets: {str(t2)}')
+	delete_item(f'Total: {str(total)}')
+	t2 += 1
+	total += 2
+	add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
+	add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+	with open('boolean_check2.txt', 'w') as f:
+		f.write(str(t2))
+
+def qc_tick():
+	global qc, total
+	delete_item(f'Total: {str(total)}')
+	delete_item(f'QC tickets: {str(qc)}')
+	qc += 1
+	total += 1
+	add_text(f'QC tickets: {str(qc)}', before='     \n\n')
+	add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
+	with open('boolean_check3.txt', 'w') as f:
+		f.write(str(qc))
+
+with open('config.txt') as config:
+	reading = config.readlines()
+	if '0' in reading[1]:
+		t1_binding = 'Nil'
+	if '1' in reading[1]:
+		t1_binding = '1'
+	if '2' in reading[1]:
+		t1_binding = '/'
+
+	if '0' in reading[2]:
+		t2_binding = 'Nil'
+	if '1' in reading[2]:
+		t2_binding = '2'
+	if '2' in reading[2]:
+		t2_binding = '*'
+
+	if '0' in reading[3]:
+		qc_binding = 'Nil'
+	if '1' in reading[3]:
+		qc_binding = 'Q'
+	if '2' in reading[3]:
+		qc_binding = '-'
+
+	print(t1_binding)
+	print(t2_binding)
+	print(qc_binding)
+
+def keypressed(sender, data):
+
+	"""
+	PRESS T1:
+		0 = none
+		1 = 1
+		2 = /
+
+		PRESS T2:
+		0 = none
+		1 = 2
+		2 = *
+
+		PRESS QC:
+		0 = none
+		1 = q
+		2 = -
+
+	"""
+		# if keybinds.get('press') in reading[1]:
+		# 	print('Press keybindings have been loaded.')
+	
+	if _KEYMAP[data] == t1_binding:
+		t1_tick()
+	if _KEYMAP[data] == t2_binding:
+		t2_tick()
+	if _KEYMAP[data] == qc_binding:
+		qc_tick()
+
+
+# _KEYMAP2 = {}
+# for const in dir(core):
+# 	if const.startswith('mvKey_'):
+# 		val = getattr(core, const)
+# 		_KEYMAP2[val] = const.replace('mvKey_', '')
+
+def keydown(sender, data):
+	pass
+# 	if _KEYMAP2[data] == 'Shift':
+# 		print('Shift down')
+
+
+
+# if check_bool:
+# 	print('Success!')
 
 #######################################
 # ticket values
@@ -77,8 +231,6 @@ elif int(date_numeric) >= 22 and int(datetime.now().strftime('%d')) <= 28:
 else:
 
 	current_week = 'week_5.txt'
-
-
 
 
 def save():
@@ -193,6 +345,59 @@ class LoginScreen:
 	def theme_setting(sender, data):
 		set_theme(data)	
 
+	def save_hotkey(sender, data):
+
+
+		
+		"""
+		Save values of radio buttons to text file. get_value() returns index number
+		data[0] = hold
+		data[1] = t1
+		data[2] = t2
+		data[3] = qc
+
+		-------------
+
+		Write line to file depending on these returned integers
+
+		get_value returns:
+		HOLD:
+		0 = none
+		1 = shift
+		2 = ctrl
+		3 = mod
+		4 = alt
+
+		PRESS T1:
+		0 = none
+		1 = 1
+		2 = /
+
+		PRESS T2:
+		0 = none
+		1 = 2
+		2 = *
+
+		PRESS QC:
+		0 = none
+		1 = q
+		2 = -
+
+		"""
+
+
+		with open('config.txt', 'w') as config:
+
+			string = f"hold={get_value(data[0])}\npress_t_one={get_value(data[1])}\npress_t_two={get_value(data[2])}\npress_kooc={get_value(data[3])}"
+			config.write(string)
+
+		# with open('config.txt', 'w') as f:
+		# 	f.write(f'{hold_str}\n{press_str}')
+
+	def reset_hotkey(sender, data):
+		# reset values in config.txt
+		print(get_value(data))
+
 	# Initializing main window	
 
 	with window('Jake counter'):
@@ -202,16 +407,57 @@ class LoginScreen:
 
 			with menu_bar(name='menu '):
 
-				with menu(name='themes'):
-					add_menu_item(parent='themes', name='Classic', callback=theme_setting, callback_data='Classic')
-					add_menu_item(parent='themes', name='Light', callback=theme_setting, callback_data='Light')
-					add_menu_item(parent='themes', name='Dark', callback=theme_setting, callback_data='Dark')
-					add_menu_item(parent='themes', name='Dark 2', callback=theme_setting, callback_data='Dark 2')
-					add_menu_item(parent='themes', name='Cherry', callback=theme_setting, callback_data='Red')
+				with menu(name=' themes '):
+					add_menu_item(parent=' themes ', name='Classic', callback=theme_setting, callback_data='Classic')
+					add_menu_item(parent=' themes ', name='Light', callback=theme_setting, callback_data='Light')
+					add_menu_item(parent=' themes ', name='Dark', callback=theme_setting, callback_data='Dark')
+					add_menu_item(parent=' themes ', name='Dark 2', callback=theme_setting, callback_data='Dark 2')
+					add_menu_item(parent=' themes ', name='Cherry', callback=theme_setting, callback_data='Red')
 
-				with menu(name=' options', parent='menu '):
-					add_menu_item(parent=' options', name='style editor', callback=show_style_editor)
+				with menu(name=' options ', parent='menu '):
+					add_menu_item(parent=' options ', name='style editor', callback=show_style_editor)
 					end()
+
+				with menu(" hotkeys ", parent='menu '):
+
+					with collapsing_header("Keybindings         "):
+
+						with tree_node("\nSet hold key\n"):
+							add_text('\nHold Key')
+							add_text('\nNOT AVAILABLE.\nPLEASE USE \nPRESS KEYS.\n\n',color=[200,0,100])
+							add_radio_button('Hold##radio',items=['none','shift','ctrl', 'mod', 'alt'])
+
+						add_separator()
+
+						with tree_node("\nSet press key\n"):
+							
+							add_text('\nAdd to T1')
+							add_radio_button('Press##radio', items=[
+														'none','1','/'], horizontal=True)
+							add_text('\nAdd to T2')
+							add_radio_button('Press2##radio', items=[
+														'none','2','*'], horizontal=True)
+							add_text('\nAdd to QC')
+							add_radio_button('Press3##radio', items=['none','q','-'], horizontal=True)
+							
+
+
+						add_separator()
+						add_text('\n')
+						add_text(' ')
+						add_same_line()
+						add_button('Save Hotkeys', callback=save_hotkey, callback_data=('Hold##radio','Press##radio','Press2##radio','Press3##radio'))
+						with popup('Save Hotkeys', 'Exit', mousebutton=0):
+							add_text('\n\nExit and reopen counter to load new hotkeys\n\n\n', color=[200,0,100])
+							add_button('Close App', callback=lambda: sys.exit())
+
+						add_same_line()
+						add_text(' ')
+						add_same_line()
+						add_button('Reset', callback=reset_hotkey, callback_data='Press##radio')
+						add_text('\n')
+
+							
 
 				with tab_bar(name='tab_bar_1', parent='chi'):  # Parent tab bar - contains all the respective tabs
 					Tab('Tickets', 'tab_bar_1').generate(True)
@@ -221,17 +467,7 @@ class LoginScreen:
 					add_text('\n\n')
 					add_text(f'T1 tickets: {str(t1)}')
 
-					def t1_tick():
-						global t1, total
-						delete_item(f'T1 tickets: {str(t1)}')
-						delete_item(f'Total: {str(total)}')
-						t1 += 1
-						total += 1
-						add_text(f'T1 tickets: {str(t1)}', before=' \n\n')
-						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
-						with open('boolean_check.txt', 'w') as f:
-							f.write(str(t1))
-
+					
 					def t1_downtick():
 						global t1, total
 						delete_item(f'T1 tickets: {str(t1)}')
@@ -252,16 +488,7 @@ class LoginScreen:
 					add_text('  \n\n')
 					add_text(f'T2 tickets: {str(t2)}')
 
-					def t2_tick():
-						global t2, total
-						delete_item(f'T2 tickets: {str(t2)}')
-						delete_item(f'Total: {str(total)}')
-						t2 += 1
-						total += 2
-						add_text(f'T2 tickets: {str(t2)}', before='   \n\n')
-						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
-						with open('boolean_check2.txt', 'w') as f:
-							f.write(str(t2))
+					
 
 					def t2_downtick():
 						global t2, total
@@ -285,17 +512,6 @@ class LoginScreen:
 					add_text('    \n\n')
 					qc_text = add_text(f'QC tickets: {str(qc)}')
 
-					def qc_tick():
-						global qc, total
-						delete_item(f'Total: {str(total)}')
-						delete_item(f'QC tickets: {str(qc)}')
-						qc += 1
-						total += 1
-						add_text(f'QC tickets: {str(qc)}', before='     \n\n')
-						add_text(f'Total: {str(total)}', before='                                ', color=[255,215,0])
-						with open('boolean_check3.txt', 'w') as f:
-							f.write(str(qc))
-
 					def qc_downtick():
 						global qc, total
 						delete_item(f'Total: {str(total)}')
@@ -315,8 +531,6 @@ class LoginScreen:
 					add_separator()
 
 					add_text('                            \n\n\n')
-					# add_text('                                ')
-					# add_same_line()
 
 					def reset():
 						global t1,t2,qc, total
@@ -389,6 +603,7 @@ class LoginScreen:
 					# Add columns that name themselves using the current day of week, as to match shift days
 
 					add_text('                                                           ')
+					# add_text("key")
 
 					with tab_bar(name='tab_bar_2', parent='Stats'):  # Parent tab bar - contains all the respective tabs
 
@@ -970,6 +1185,9 @@ class LoginScreen:
 				
 
 if __name__ == '__main__':
+	set_key_down_callback(keydown)
+	set_key_press_callback(keypressed)
+
 	base = ConstructGui(500, 650)
 	base.builder()
 	base.run_app()
