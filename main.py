@@ -166,8 +166,6 @@ def keypressed(sender, data):
 		2 = -
 
 	"""
-		# if keybinds.get('press') in reading[1]:
-		# 	print('Press keybindings have been loaded.')
 	
 	if _KEYMAP[data] == t1_binding:
 		t1_tick()
@@ -177,21 +175,8 @@ def keypressed(sender, data):
 		qc_tick()
 
 
-# _KEYMAP2 = {}
-# for const in dir(core):
-# 	if const.startswith('mvKey_'):
-# 		val = getattr(core, const)
-# 		_KEYMAP2[val] = const.replace('mvKey_', '')
-
 def keydown(sender, data):
 	pass
-# 	if _KEYMAP2[data] == 'Shift':
-# 		print('Shift down')
-
-
-
-# if check_bool:
-# 	print('Success!')
 
 #######################################
 # ticket values
@@ -200,8 +185,6 @@ a=t1
 b=t2*2
 c=qc
 total = int(a+b+c)
-
-
 
 #######################################
 # Save function
@@ -456,8 +439,14 @@ class LoginScreen:
 						add_same_line()
 						add_button('Reset', callback=reset_hotkey, callback_data='Press##radio')
 						add_text('\n')
+						add_separator()
+						add_text('')
+						add_text(f'\tCurrent hotkeys:\n' 
+								 f'\tt1={t1_binding}' 
+								 f' t2={t2_binding}'
+								 f' qc={qc_binding}', color=[0,200,0])
 
-							
+						add_text('')
 
 				with tab_bar(name='tab_bar_1', parent='chi'):  # Parent tab bar - contains all the respective tabs
 					Tab('Tickets', 'tab_bar_1').generate(True)
@@ -1206,3 +1195,4 @@ with open('boolean_check3.txt', 'w') as f3:
 	f3.write(str(qc))
 
 #################################################################
+
