@@ -122,6 +122,17 @@ def qc_tick():
 
 with open('config.txt') as config:
 	reading = config.readlines()
+	if '0' in reading[0]:
+		hold_binding = 'Nil'
+	if '1' in reading[0]:
+		hold_binding = 'Shift'
+	if '2' in reading[0]:
+		hold_binding = 'Ctrl'
+	if '3' in reading[0]:
+		hold_binding = 'Mod'
+	if '4' in reading[0]:
+		hold_binding = 'Alt'
+
 	if '0' in reading[1]:
 		t1_binding = 'Nil'
 	if '1' in reading[1]:
@@ -143,6 +154,7 @@ with open('config.txt') as config:
 	if '2' in reading[3]:
 		qc_binding = '-'
 
+	print(hold_binding)
 	print(t1_binding)
 	print(t2_binding)
 	print(qc_binding)
@@ -167,16 +179,79 @@ def keypressed(sender, data):
 
 	"""
 	
-	if _KEYMAP[data] == t1_binding:
+	if _KEYMAP[data] == t1_binding and hold_binding != 'Nil':
 		t1_tick()
-	if _KEYMAP[data] == t2_binding:
+	if _KEYMAP[data] == t2_binding and hold_binding != 'Nil':
 		t2_tick()
-	if _KEYMAP[data] == qc_binding:
+	if _KEYMAP[data] == qc_binding and hold_binding != 'Nil':
 		qc_tick()
 
 
 def keydown(sender, data):
-	pass
+	# Hold key
+	if is_key_down(mvKey_Shift):
+		print('Shift is held down')
+	if is_key_down(mvKey_LControl):
+		print('Control is held down')
+	if is_key_down(mvKey_LWin):
+		print('Window key is held down')
+	if is_key_down(mvKey_Alt):
+		print('Alt is held down')
+
+def checkComboKeys(sender, data):
+	# keyboard values found at:
+	# https://github.com/hoffstadt/DearPyGui/blob/39fa02639a2fb86362c8c24b253cbbf7300bd002/DearPyGui/src/core/mvInput.cpp
+
+	try:
+		if hold_binding == 'Shift':
+			holdKey = 340
+		elif hold_binding == 'Ctrl':
+			holdKey = 341
+		elif hold_binding == 'Mod':
+			holdKey = 343
+		elif hold_binding == 'Alt':
+			holdKey = 342
+		else:
+			holdKey = 999
+
+		if t1_binding == '1':
+			t1_bind = 49
+
+		if t2_binding == '2':
+			t2_bind = 50
+
+		if qc_binding == 'Q':
+			qc_bind = 81
+
+		# keys are mapped using integers to return bool value	
+		if is_key_down(holdKey) and is_key_pressed(t1_bind):
+			t1_tick()
+		elif hold_binding == 'Nil' and is_key_pressed(t1_bind):
+			t1_tick()
+
+		if is_key_down(holdKey) and is_key_pressed(t2_bind):
+			t2_tick()
+		elif hold_binding == 'Nil' and is_key_pressed(t2_bind):
+			t2_tick()
+
+		if is_key_down(holdKey) and is_key_pressed(qc_bind):
+			qc_tick()
+		elif hold_binding == 'Nil' and is_key_pressed(qc_bind):
+			qc_tick()
+	except UnboundLocalError:
+		pass
+
+
+print(f'1: {mvKey_1}')
+print(f'2: {mvKey_2}')
+print(f'q: {mvKey_Q}')
+
+
+
+print(f'Shift: {mvKey_Shift}')
+print(f'LControl: {mvKey_LControl}')
+print(f'LWin: {mvKey_LWin}')
+print(f'Alt: {mvKey_Alt}')
 
 #######################################
 # ticket values
@@ -374,8 +449,6 @@ class LoginScreen:
 			string = f"hold={get_value(data[0])}\npress_t_one={get_value(data[1])}\npress_t_two={get_value(data[2])}\npress_kooc={get_value(data[3])}"
 			config.write(string)
 
-		# with open('config.txt', 'w') as f:
-		# 	f.write(f'{hold_str}\n{press_str}')
 
 	def reset_hotkey(sender, data):
 		# reset values in config.txt
@@ -407,9 +480,9 @@ class LoginScreen:
 
 						with tree_node("\nSet hold key\n"):
 							add_text('\nHold Key')
-							add_text('\nNOT AVAILABLE.\nPLEASE USE \nPRESS KEYS.\n\n',color=[200,0,100])
+							# add_text('\nNOT AVAILABLE.\nPLEASE USE \nPRESS KEYS.\n\n',color=[200,0,100])
 							add_radio_button('Hold##radio',items=['none','shift','ctrl', 'mod', 'alt'])
-
+							add_text('')
 						add_separator()
 
 						with tree_node("\nSet press key\n"):
@@ -441,10 +514,12 @@ class LoginScreen:
 						add_text('\n')
 						add_separator()
 						add_text('')
-						add_text(f'\tCurrent hotkeys:\n' 
-								 f'\tt1={t1_binding}' 
-								 f' t2={t2_binding}'
-								 f' qc={qc_binding}', color=[0,200,0])
+						add_text(f'\tCurrent hotkeys:\n'
+								 f'----------------------\n'
+								 f'\tHOLD={hold_binding}'
+								 f' T1={t1_binding}\n' 
+								 f'\tT2={t2_binding}'
+								 f' QC={qc_binding}', color=[0,200,0])
 
 						add_text('')
 
@@ -1174,9 +1249,9 @@ class LoginScreen:
 				
 
 if __name__ == '__main__':
-	set_key_down_callback(keydown)
-	set_key_press_callback(keypressed)
-
+	# set_key_down_callback(keydown)
+	set_key_press_callback(checkComboKeys)
+	# set_render_callback(checkComboKeys)
 	base = ConstructGui(500, 650)
 	base.builder()
 	base.run_app()
