@@ -126,6 +126,35 @@ with open('config.txt') as config:
 		sound_name = 'None'
 		print(sound_mp3)
 
+with open('hotkeys.txt') as hotkey:
+	reading = hotkey.readlines()
+	if '0' in reading[0]:
+		hold_binding = None
+	if '1' in reading[0]:
+		hold_binding = 'shift'
+	if '2' in reading[0]:
+		hold_binding = 'ctrl'
+	if '3' in reading[0]:
+		hold_binding = 'alt'
+
+	t1_binding = reading[1].strip('\n')
+	t2_binding = reading[2].strip('\n')
+	qc_binding = reading[3].strip('\n')
+
+	# for char2 in reading[2]:
+	# 	if char2 != 'None':
+	# 		t2_binding = char2
+	# 	else:
+	# 		t2_binding = None
+
+	# for char3 in reading[3]:
+	# 	if char3 != 'None':
+	# 		qc_binding = char3
+	# 	else:
+	# 		qc_binding = None
+
+
+
 
 def t1_tick():
 	global t1, total
@@ -166,7 +195,16 @@ def qc_tick():
 	with open('boolean_check3.txt', 'w') as f:
 		f.write(str(qc))
 
-# keyboard.add_hotkey('s', t1_tick)
+try:
+	keyboard.add_hotkey(f'{hold_binding}+{t1_binding}', t1_tick)
+	keyboard.add_hotkey(f'{hold_binding}+{t2_binding}', t2_tick)
+	keyboard.add_hotkey(f'{hold_binding}+{qc_binding}', qc_tick)
+except:
+	pass
+
+# print(f'{hold_binding}+{t1_binding}')
+
+# keyboard.add_hotkey("/", t1_tick)
 
 
 
@@ -334,27 +372,25 @@ else:
 
 	current_week = 'week_5.txt'
 
-
 def disableCheckBox():
 	# Delete checkboxes and replace so user cannot select multiple sounds
-	group = ['None##','Click##','Splat##','Zombie##']
+	group = ['Click##','Splat##','Zombie##']
 	masterBox = 'None##'
 	for checkbox in group:
 		if get_value(masterBox) == 1 and get_value(checkbox) != 0:
 			delete_item(checkbox)
-			if checkbox == group[1]:
+			if checkbox == group[0]:
 				add_checkbox(checkbox,
 					before='			',
 					callback=lambda: play(sound1))
-			if checkbox == group[2]:
+			if checkbox == group[1]:
 				add_checkbox(checkbox,
 					before='				',
 					callback=lambda: play(sound2))
-			if checkbox == group[3]:
+			if checkbox == group[2]:
 				add_checkbox(checkbox,
 					before='					',
 					callback=lambda: play(sound3))
-		# if get_value() # repeat this code until all checkboxes cancel each other upon clicking
 
 
 def save():
@@ -513,17 +549,24 @@ class LoginScreen:
 		with open('config.txt', 'w') as config:
 
 			bools = [get_value(data[0]),get_value(data[1]),get_value(data[2]),get_value(data[3])]
-			string = f"None={bools[0]}\nClick={bools[1]}\nSplat={bools[2]}\nZombie={bools[3]}"
+			string = f"None={bools[0]}\nClick={bools[1]}\nSplat={bools[2]}\nZombie={bools[3]}\n"
 			# string = f"sound={get_value(data)}"
-			# print(string)
+			print(string)
 			config.write(string)
 
 
 
 
 	def reset_hotkey(sender, data):
-		# reset values in config.txt
-		print(get_value(data))
+		pass
+
+	def saveHotkeys(sender, data):
+
+		with open('hotkeys.txt', 'w') as hotkey:
+
+			bools = [get_value(data[0]),get_value(data[1]),get_value(data[2]),get_value(data[3])]
+			string = f"{bools[0]}\n{bools[1]}\n{bools[2]}\n{bools[3]}\n"
+			hotkey.write(string)
 
 	# Initializing main window	
 
@@ -569,7 +612,7 @@ class LoginScreen:
 							add_checkbox('None##',
 								default_value=0,
 								callback=disableCheckBox)
-							add_text('')
+							add_text('								')
 							add_checkbox('Click##',
 								default_value=0,
 								callback=lambda: play(sound1))
@@ -610,6 +653,48 @@ class LoginScreen:
 								 , color=[0,200,0])
 
 						add_text('')
+
+				with menu(' hotkeys ', parent='menu '):
+
+					with collapsing_header(' Hotkeys '):
+
+						with tree_node(' set hotkeys '):
+
+							add_text(' \nPlease add a hold key,\nthen a press key for\neach ticket type\n ')
+
+							#hold key
+							add_radio_button('hold##',
+								items=['none','shift','ctrl','alt',],
+								horizontal=True)
+							add_text('')
+							#t1
+							add_input_text('##inp1',
+								hint='T1 tickets')
+							add_text('')
+							#t2
+							add_input_text('##inp2',
+								hint='T2 tickets')
+							add_text('')
+							#qc
+							add_input_text('##inp3',
+								hint='QC tickets')
+							add_text('\n\n')
+							add_text('')
+							add_same_line()
+							add_button('Save hotkeys',
+								callback=saveHotkeys,
+								callback_data=('hold##','##inp1','##inp2','##inp3'))
+							add_text('\n')
+							add_separator()
+							add_text('')
+							add_text(f'\t\tCurrent Hotkeys:\n'
+									 f'\t-----------------------\n'
+									 f'\t\t\ttesting'
+									 , color=[0,200,0])
+
+							add_text('')
+
+
 
 				with tab_bar(name='tab_bar_1', parent='chi'):  # Parent tab bar - contains all the respective tabs
 					Tab('Tickets', 'tab_bar_1').generate(True)
