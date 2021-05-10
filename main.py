@@ -4,12 +4,28 @@ from dearpygui.core import *
 from dearpygui.simple import *
 from datetime import datetime
 import sys
+import keyboard
+from pydub.playback import play
+from pydub import AudioSegment
+
+# def killer():
+#     sys.exit()
+
+###
+# Sound files
+
+sounds = {'click': '/home/jc/Download/weapon_gun_1911_A_12.mp3',
+		  'click2': '/home/jc/Download/zapsplat_cartoon_slime_drip_single_003_50313.mp3',
+		  'click3': '/home/jc/Download/zapsplat_horror_monster_short_growl_breathy_54487.mp3',
+		  }
+sound1 = AudioSegment.from_mp3(sounds.get('click'))
+sound2 = AudioSegment.from_mp3(sounds.get('click2'))
+sound3 = AudioSegment.from_mp3(sounds.get('click3'))
+
 
 
 ###################################################################
 #Load data
-keybinds = {'hold': 'hold=ctrl',
-			'press': 'press=set_1'}
 
 try:
 	with open('boolean_check.txt') as checker:
@@ -38,6 +54,12 @@ try:
 
 except:
 	pass
+
+#########################
+# testing
+
+
+#########################
 
 # try:
 
@@ -78,17 +100,37 @@ except:
 # def key_press_callback(sender, data):
 #     if is_key_pressed(mvKey_Return):
 #     	print('Return key pressed!')
-matches = ['Shift', 'A']
 
-_KEYMAP = {}
-for const in dir(core):
-	if const.startswith('mvKey_'):
-		val = getattr(core, const)
-		_KEYMAP[val] = const.replace('mvKey_', '')
+# _KEYMAP = {}
+# for const in dir(core):
+# 	if const.startswith('mvKey_'):
+# 		val = getattr(core, const)
+# 		_KEYMAP[val] = const.replace('mvKey_', '')
+
+with open('config.txt') as config:
+	reading = config.readlines()
+	if 'True' in reading[0]:
+		sound_mp3 = None
+		sound_name = 'None'
+	elif 'True' in reading[1]:
+		sound_mp3 = sound1
+		sound_name = 'CLICK'
+	elif 'True' in reading[2]:
+		sound_mp3 = sound2
+		sound_name = 'SPLAT'
+	elif 'True' in reading[3]:
+		sound_mp3 = sound3
+		sound_name = 'ZOMBIE'
+	else:
+		sound_mp3 = None
+		sound_name = 'None'
+		print(sound_mp3)
 
 
 def t1_tick():
 	global t1, total
+	if sound_mp3 != None:
+		play(sound_mp3)
 	delete_item(f'T1 tickets: {str(t1)}')
 	delete_item(f'Total: {str(total)}')
 	t1 += 1
@@ -100,6 +142,8 @@ def t1_tick():
 
 def t2_tick():
 	global t2, total
+	if sound_mp3 != None:
+		play(sound_mp3)
 	delete_item(f'T2 tickets: {str(t2)}')
 	delete_item(f'Total: {str(total)}')
 	t2 += 1
@@ -111,6 +155,8 @@ def t2_tick():
 
 def qc_tick():
 	global qc, total
+	if sound_mp3 != None:
+		play(sound_mp3)
 	delete_item(f'Total: {str(total)}')
 	delete_item(f'QC tickets: {str(qc)}')
 	qc += 1
@@ -120,138 +166,136 @@ def qc_tick():
 	with open('boolean_check3.txt', 'w') as f:
 		f.write(str(qc))
 
-with open('config.txt') as config:
-	reading = config.readlines()
-	if '0' in reading[0]:
-		hold_binding = 'Nil'
-	if '1' in reading[0]:
-		hold_binding = 'Shift'
-	if '2' in reading[0]:
-		hold_binding = 'Ctrl'
-	if '3' in reading[0]:
-		hold_binding = 'Mod'
-	if '4' in reading[0]:
-		hold_binding = 'Alt'
+# keyboard.add_hotkey('s', t1_tick)
 
-	if '0' in reading[1]:
-		t1_binding = 'Nil'
-	if '1' in reading[1]:
-		t1_binding = '1'
-	if '2' in reading[1]:
-		t1_binding = '/'
 
-	if '0' in reading[2]:
-		t2_binding = 'Nil'
-	if '1' in reading[2]:
-		t2_binding = '2'
-	if '2' in reading[2]:
-		t2_binding = '*'
 
-	if '0' in reading[3]:
-		qc_binding = 'Nil'
-	if '1' in reading[3]:
-		qc_binding = 'Q'
-	if '2' in reading[3]:
-		qc_binding = '-'
+	# if '2' in reading[0]:
+	# 	hold_binding = 'Ctrl'
+	# if '3' in reading[0]:
+	# 	hold_binding = 'Mod'
+	# if '4' in reading[0]:
+	# 	hold_binding = 'Alt'
 
-	print(hold_binding)
-	print(t1_binding)
-	print(t2_binding)
-	print(qc_binding)
+	# if '0' in reading[1]:
+	# 	t1_binding = 'Nil'
+	# if '1' in reading[1]:
+	# 	t1_binding = '1'
+	# if '2' in reading[1]:
+	# 	t1_binding = '/'
 
-def keypressed(sender, data):
+	# if '0' in reading[2]:
+	# 	t2_binding = 'Nil'
+	# if '1' in reading[2]:
+	# 	t2_binding = '2'
+	# if '2' in reading[2]:
+	# 	t2_binding = '*'
 
-	"""
-	PRESS T1:
-		0 = none
-		1 = 1
-		2 = /
+	# if '0' in reading[3]:
+	# 	qc_binding = 'Nil'
+	# if '1' in reading[3]:
+	# 	qc_binding = 'Q'
+	# if '2' in reading[3]:
+	# 	qc_binding = '-'
 
-		PRESS T2:
-		0 = none
-		1 = 2
-		2 = *
+	# print(hold_binding)
+	# print(t1_binding)
+	# print(t2_binding)
+	# print(qc_binding)
 
-		PRESS QC:
-		0 = none
-		1 = q
-		2 = -
+# def keypressed(sender, data):
 
-	"""
+# 	"""
+# 	PRESS T1:
+# 		0 = none
+# 		1 = 1
+# 		2 = /
+
+# 		PRESS T2:
+# 		0 = none
+# 		1 = 2
+# 		2 = *
+
+# 		PRESS QC:
+# 		0 = none
+# 		1 = q
+# 		2 = -
+
+# 	"""
 	
-	if _KEYMAP[data] == t1_binding and hold_binding != 'Nil':
-		t1_tick()
-	if _KEYMAP[data] == t2_binding and hold_binding != 'Nil':
-		t2_tick()
-	if _KEYMAP[data] == qc_binding and hold_binding != 'Nil':
-		qc_tick()
+# 	if _KEYMAP[data] == t1_binding and hold_binding != 'Nil':
+# 		t1_tick()
+# 	if _KEYMAP[data] == t2_binding and hold_binding != 'Nil':
+# 		t2_tick()
+# 	if _KEYMAP[data] == qc_binding and hold_binding != 'Nil':
+# 		qc_tick()
 
 
-def keydown(sender, data):
-	# Hold key
-	if is_key_down(mvKey_Shift):
-		print('Shift is held down')
-	if is_key_down(mvKey_LControl):
-		print('Control is held down')
-	if is_key_down(mvKey_LWin):
-		print('Window key is held down')
-	if is_key_down(mvKey_Alt):
-		print('Alt is held down')
+# def keydown(sender, data):
+# 	# Hold key
+# 	if is_key_down(mvKey_Shift):
+# 		print('Shift is held down')
+# 	if is_key_down(mvKey_LControl):
+# 		print('Control is held down')
+# 	if is_key_down(mvKey_LWin):
+# 		print('Window key is held down')
+# 	if is_key_down(mvKey_Alt):
+# 		print('Alt is held down')
 
-def checkComboKeys(sender, data):
-	# keyboard values found at:
-	# https://github.com/hoffstadt/DearPyGui/blob/39fa02639a2fb86362c8c24b253cbbf7300bd002/DearPyGui/src/core/mvInput.cpp
+# def checkComboKeys(sender, data):
+# 	# keyboard values found at:
+# 	# https://github.com/hoffstadt/DearPyGui/blob/39fa02639a2fb86362c8c24b253cbbf7300bd002/DearPyGui/src/core/mvInput.cpp
 
-	try:
-		if hold_binding == 'Shift':
-			holdKey = 340
-		elif hold_binding == 'Ctrl':
-			holdKey = 341
-		elif hold_binding == 'Mod':
-			holdKey = 343
-		elif hold_binding == 'Alt':
-			holdKey = 342
-		else:
-			holdKey = 999
+# 	try:
+# 		if hold_binding == 'Shift':
+# 			holdKey = 340
+# 		elif hold_binding == 'Ctrl':
+# 			holdKey = 341
+# 		elif hold_binding == 'Mod':
+# 			holdKey = 343
+# 		elif hold_binding == 'Alt':
+# 			holdKey = 342
+# 		else:
+# 			holdKey = 999
 
-		if t1_binding == '1':
-			t1_bind = 49
+# 		if t1_binding == '1':
+# 			t1_bind = 49
 
-		if t2_binding == '2':
-			t2_bind = 50
+# 		if t2_binding == '2':
+# 			t2_bind = 50
 
-		if qc_binding == 'Q':
-			qc_bind = 81
+# 		if qc_binding == 'Q':
+# 			qc_bind = 81
 
-		# keys are mapped using integers to return bool value	
-		if is_key_down(holdKey) and is_key_pressed(t1_bind):
-			t1_tick()
-		elif hold_binding == 'Nil' and is_key_pressed(t1_bind):
-			t1_tick()
+# 		# keys are mapped using integers to return bool value	
+# 		if is_key_down(holdKey) and is_key_pressed(t1_bind):
+# 			t1_tick()
+# 		elif hold_binding == 'Nil' and is_key_pressed(t1_bind):
+# 			t1_tick()
 
-		if is_key_down(holdKey) and is_key_pressed(t2_bind):
-			t2_tick()
-		elif hold_binding == 'Nil' and is_key_pressed(t2_bind):
-			t2_tick()
+# 		if is_key_down(holdKey) and is_key_pressed(t2_bind):
+# 			t2_tick()
+# 		elif hold_binding == 'Nil' and is_key_pressed(t2_bind):
+# 			t2_tick()
 
-		if is_key_down(holdKey) and is_key_pressed(qc_bind):
-			qc_tick()
-		elif hold_binding == 'Nil' and is_key_pressed(qc_bind):
-			qc_tick()
-	except UnboundLocalError:
-		pass
-
-
-print(f'1: {mvKey_1}')
-print(f'2: {mvKey_2}')
-print(f'q: {mvKey_Q}')
+# 		if is_key_down(holdKey) and is_key_pressed(qc_bind):
+# 			qc_tick()
+# 		elif hold_binding == 'Nil' and is_key_pressed(qc_bind):
+# 			qc_tick()
+# 	except UnboundLocalError:
+# 		pass
 
 
+# print(f'1: {mvKey_1}')
+# print(f'2: {mvKey_2}')
+# print(f'q: {mvKey_Q}')
 
-print(f'Shift: {mvKey_Shift}')
-print(f'LControl: {mvKey_LControl}')
-print(f'LWin: {mvKey_LWin}')
-print(f'Alt: {mvKey_Alt}')
+
+
+# print(f'Shift: {mvKey_Shift}')
+# print(f'LControl: {mvKey_LControl}')
+# print(f'LWin: {mvKey_LWin}')
+# print(f'Alt: {mvKey_Alt}')
 
 #######################################
 # ticket values
@@ -289,6 +333,28 @@ elif int(date_numeric) >= 22 and int(datetime.now().strftime('%d')) <= 28:
 else:
 
 	current_week = 'week_5.txt'
+
+
+def disableCheckBox():
+	# Delete checkboxes and replace so user cannot select multiple sounds
+	group = ['None##','Click##','Splat##','Zombie##']
+	masterBox = 'None##'
+	for checkbox in group:
+		if get_value(masterBox) == 1 and get_value(checkbox) != 0:
+			delete_item(checkbox)
+			if checkbox == group[1]:
+				add_checkbox(checkbox,
+					before='			',
+					callback=lambda: play(sound1))
+			if checkbox == group[2]:
+				add_checkbox(checkbox,
+					before='				',
+					callback=lambda: play(sound2))
+			if checkbox == group[3]:
+				add_checkbox(checkbox,
+					before='					',
+					callback=lambda: play(sound3))
+		# if get_value() # repeat this code until all checkboxes cancel each other upon clicking
 
 
 def save():
@@ -446,8 +512,13 @@ class LoginScreen:
 
 		with open('config.txt', 'w') as config:
 
-			string = f"hold={get_value(data[0])}\npress_t_one={get_value(data[1])}\npress_t_two={get_value(data[2])}\npress_kooc={get_value(data[3])}"
+			bools = [get_value(data[0]),get_value(data[1]),get_value(data[2]),get_value(data[3])]
+			string = f"None={bools[0]}\nClick={bools[1]}\nSplat={bools[2]}\nZombie={bools[3]}"
+			# string = f"sound={get_value(data)}"
+			# print(string)
 			config.write(string)
+
+
 
 
 	def reset_hotkey(sender, data):
@@ -474,27 +545,46 @@ class LoginScreen:
 					add_menu_item(parent=' options ', name='style editor', callback=show_style_editor)
 					end()
 
-				with menu(" hotkeys ", parent='menu '):
+				with menu(" sounds ", parent='menu '):
 
-					with collapsing_header("Keybindings         "):
+					with collapsing_header("Sound Effects         "):
 
-						with tree_node("\nSet hold key\n"):
-							add_text('\nHold Key')
-							# add_text('\nNOT AVAILABLE.\nPLEASE USE \nPRESS KEYS.\n\n',color=[200,0,100])
-							add_radio_button('Hold##radio',items=['none','shift','ctrl', 'mod', 'alt'])
-							add_text('')
-						add_separator()
+						add_text(' \nSelecting a sound will add it to\nall buttons/hotkeys\n')
 
-						with tree_node("\nSet press key\n"):
+						# with tree_node("\nSet hold key\n"):
+						# 	add_text('\nHold Key')
+						# 	# add_text('\nNOT AVAILABLE.\nPLEASE USE \nPRESS KEYS.\n\n',color=[200,0,100])
+						# 	add_radio_button('Hold##radio',items=['none','shift','ctrl', 'mod', 'alt'])
+						# 	add_text('')
+						# add_separator()
+
+						with tree_node("\nSounds\n"):
 							
-							add_text('\nAdd to T1')
-							add_radio_button('Press##radio', items=[
-														'none','1','/'], horizontal=True)
-							add_text('\nAdd to T2')
-							add_radio_button('Press2##radio', items=[
-														'none','2','*'], horizontal=True)
-							add_text('\nAdd to QC')
-							add_radio_button('Press3##radio', items=['none','q','-'], horizontal=True)
+							add_text('\nAdd a sound effect')
+							# add_radio_button('Press##radio', 
+							# 	items=['none','click','splat','zombie','sword'], 
+							# 	horizontal=False,
+							# 	callback=lambda: play(sound_mp3)
+							# 		)
+							add_checkbox('None##',
+								default_value=0,
+								callback=disableCheckBox)
+							add_text('')
+							add_checkbox('Click##',
+								default_value=0,
+								callback=lambda: play(sound1))
+							add_text('			')
+							add_checkbox('Splat##',
+								default_value=0,
+								callback=lambda: play(sound2))
+							add_text('				')
+							add_checkbox('Zombie##',
+								default_value=0,
+								callback=lambda: play(sound3))
+							add_text('					')
+
+							
+							
 							
 
 
@@ -502,9 +592,9 @@ class LoginScreen:
 						add_text('\n')
 						add_text(' ')
 						add_same_line()
-						add_button('Save Hotkeys', callback=save_hotkey, callback_data=('Hold##radio','Press##radio','Press2##radio','Press3##radio'))
-						with popup('Save Hotkeys', 'Exit', mousebutton=0):
-							add_text('\n\nExit and reopen counter to load new hotkeys\n\n\n', color=[200,0,100])
+						add_button('Save Sound', callback=save_hotkey, callback_data=('None##','Click##','Splat##','Zombie##'))
+						with popup('Save Sound', 'Exit', mousebutton=0):
+							add_text('\n\nExit and reopen counter to load new sound effect\n\n\n', color=[200,0,100])
 							add_button('Close App', callback=lambda: sys.exit())
 
 						add_same_line()
@@ -514,12 +604,10 @@ class LoginScreen:
 						add_text('\n')
 						add_separator()
 						add_text('')
-						add_text(f'\tCurrent hotkeys:\n'
-								 f'----------------------\n'
-								 f'\tHOLD={hold_binding}'
-								 f' T1={t1_binding}\n' 
-								 f'\tT2={t2_binding}'
-								 f' QC={qc_binding}', color=[0,200,0])
+						add_text(f'\t\tCurrent sound:\n'
+								 f'\t-----------------------\n'
+								 f'\t\t\t{sound_name}'
+								 , color=[0,200,0])
 
 						add_text('')
 
@@ -1250,7 +1338,7 @@ class LoginScreen:
 
 if __name__ == '__main__':
 	# set_key_down_callback(keydown)
-	set_key_press_callback(checkComboKeys)
+	# set_key_press_callback(checkComboKeys)
 	# set_render_callback(checkComboKeys)
 	base = ConstructGui(500, 650)
 	base.builder()
