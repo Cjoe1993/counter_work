@@ -1,13 +1,5 @@
 # counter_work
 
-Counter for work.
-
-Lots of usage of file writing, this is to constantly save the current number of tickets done, as the user's computer often freezes and needs rebooting. 
-
-- dependencies -
-
-  dearpygui
+Counter for customer service agent.
   
-also requires 3 text files in same directory, boolean_check.txt, boolean_check2.txt, boolean_check3.txt
-
-# sounds provided by zapsplat.com
+sounds provided by zapsplat.com. Sound menu currently disabled
