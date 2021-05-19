@@ -299,6 +299,30 @@ Sunday 0
 			new_document+=line
 		f.write(str(new_document))
 
+def reinit_hotkeys():
+	# reinitialize hotkeys if language pack interupts them
+	keyboard.unhook_all_hotkeys()
+	if hold_binding != 'Nil' and t1_binding != 'Nil':
+		keyboard.add_hotkey(f'{hold_binding}+{t1_binding}', t1_tick)
+	elif hold_binding == 'Nil' and t1_binding != 'Nil':
+		keyboard.add_hotkey(t1_binding, t1_tick)
+	else:
+		pass
+
+	if hold_binding != 'Nil' and t2_binding != 'Nil':
+		keyboard.add_hotkey(f'{hold_binding}+{t2_binding}', t2_tick)
+	elif hold_binding == 'Nil' and t2_binding != 'Nil':
+		keyboard.add_hotkey(t2_binding, t2_tick)
+	else:
+		pass
+
+	if hold_binding != 'Nil' and qc_binding != 'Nil':
+		keyboard.add_hotkey(f'{hold_binding}+{qc_binding}', qc_tick)
+	elif hold_binding == 'Nil' and qc_binding != 'Nil':
+		keyboard.add_hotkey(qc_binding, qc_tick)
+	else:
+		pass
+
 		
 class ConstructGui:
 
@@ -646,6 +670,13 @@ class LoginScreen:
 
 					# add_same_line()
 					add_button('Reset All', small=True, callback=reset)
+					add_same_line()
+					add_text('  ')
+					add_same_line()
+					add_button('Restart Hotkeys',
+					small=True, 
+					callback=reinit_hotkeys)
+
 
 					
 
@@ -1284,4 +1315,5 @@ with open('totalus.txt', 'w') as t:
 	t.write(str(totalus))
 
 #################################################################
+
 
