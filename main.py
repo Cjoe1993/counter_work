@@ -421,15 +421,6 @@ class LoginScreen:
 		2 = -
 
 		"""
-
-
-		# with open('config.txt', 'w') as config:
-
-		# 	bools = [get_value(data[0]),get_value(data[1]),get_value(data[2]),get_value(data[3])]
-		# 	string = f"None={bools[0]}\nClick={bools[1]}\nSplat={bools[2]}\nZombie={bools[3]}\n"
-		# 	# string = f"sound={get_value(data)}"
-		# 	print(string)
-		# 	config.write(string)
 		pass
 
 
